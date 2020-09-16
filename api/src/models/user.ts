@@ -4,7 +4,7 @@ import { CountryDoc } from './country';
 
 // An interface that describes the properties
 // that are required to create a new User
-interface UserAttrs {
+export interface UserAttrs {
   name: string;
   lastname: string;
   email: string;
