@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import { Password } from '../services/password';
 
 // An interface that describes the properties
 // that are required to create a new User
@@ -80,9 +80,16 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+/**
+ * Hook to execute before a document is saved
+ * Note no arrow function is used to preserve the value of this to be equal to
+ * the user document
+ */
 userSchema.pre('save', async function(done) {
   if (this.isModified('password')) {
     //TODO Need to hash the user password before saving it
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
   }
   done();
 });
