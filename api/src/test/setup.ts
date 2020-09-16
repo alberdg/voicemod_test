@@ -3,6 +3,32 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../app';
 import { Country } from '../models/country';
+import { CountryDoc } from '../models/country';
+let countries: CountryDoc[] = [];
+
+/**
+ * Builds a test user object
+ * @function
+ * @returns user User object
+ */
+export const buildUserObject = async () => {
+  if (!Array.isArray(countries) || countries.length === 0) {
+    const response = await request(app)
+      .get('/api/countries')
+      .send();
+    countries = response.body;
+  }
+
+  return {
+    name: 'Jonh',
+    lastname: 'Doe',
+    email: 'jonh.doe@test.com',
+    password: 'jonhdoespas$',
+    country: countries[0].id,
+    telephone: '+34687014958',
+    postcode: '46019',
+  };
+}
 
 const COUNTRIES = [
   'Afganistán',
