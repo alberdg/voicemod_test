@@ -1,0 +1,128 @@
+import request from 'supertest';
+import { app } from '../../app';
+import { CountryDoc } from '../../models/country';
+
+let countries: CountryDoc[] = [];
+
+/**
+ * Builds a test user object
+ * @function
+ * @returns user User object
+ */
+const buildUserObject = async () => {
+  if (!Array.isArray(countries) || countries.length === 0) {
+    const response = await request(app)
+      .get('/api/countries')
+      .send();
+    countries = response.body;
+  }
+
+  return {
+    name: 'Jonh',
+    lastname: 'Doe',
+    email: 'jonh.doe@test.com',
+    password: 'jonhdoespas$',
+    country: countries[0].id,
+    telephone: '+34687014958',
+    postcode: '46019',
+  };
+}
+
+it('returns a 201 on successful signup', async () => {
+  const user = await buildUserObject();
+
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(201);
+});
+
+it('returns a 400 with an invalid name', async () => {
+  const user = await buildUserObject();
+  user.name = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+it('returns a 400 with an invalid last name', async () => {
+  const user = await buildUserObject();
+  user.lastname = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+it('returns a 400 with an invalid email', async () => {
+  const user = await buildUserObject();
+  user.email = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+it('returns a 400 with an invalid password', async () => {
+  const user = await buildUserObject();
+  user.password = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+
+it('returns a 400 with an invalid country', async () => {
+  const user = await buildUserObject();
+  const fakeCountryId = 'fakeId';
+  user.country = fakeCountryId;
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+it('returns a 400 with an invalid telephone', async () => {
+  const user = await buildUserObject();
+  user.telephone = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+it('returns a 400 with an invalid postcode', async () => {
+  const user = await buildUserObject();
+  user.postcode = '';
+  return request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+
+it('disallows duplicate emails', async () => {
+  const user = await buildUserObject();
+  await request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(201);
+
+  await request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(400);
+});
+
+
+it('sets a cookie after successful signup', async () => {
+  const user = await buildUserObject();
+  const response = await request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(201);
+
+  expect(response.get('Set-Cookie')).toBeDefined();
+});

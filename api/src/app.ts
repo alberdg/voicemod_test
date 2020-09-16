@@ -1,10 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { NotFoundError } from './errors/not-found-error';
 import { errorHandler } from './middlewares/error-handler';
 import { countryRouter } from './routes/country';
-
+import { signupRouter } from './routes/signup';
+import { NotFoundError } from './errors/not-found-error';
 
 const app: Express = express();
 app.use(json());
@@ -16,11 +16,12 @@ app.use(
 );
 
 app.use(countryRouter);
+app.use(signupRouter);
 
 /**
  * Catches all non registered routes and throws an error
  */
-app.all('*', async (req: Request, res: Response) => {
+app.all('*', (req: Request, res: Response) => {
   res.status(404).send(new NotFoundError(req.url).serializeErrors());
 });
 

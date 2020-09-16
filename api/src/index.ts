@@ -7,11 +7,16 @@ const HTTP_PORT = 3001;
  * @function
  */
 const start = async () => {
+  // Throw an error if jwt_key env variable does not exist
+  if (!process.env.JWT_KEY) {
+    throw new Error('JWT_KEY must be defined');
+  }
+
   // Throw an error if mongo uri env variable does not exist
   if (!process.env.MONGO_URI) {
     throw new Error('MONGO_URI must be defined');
   }
-  
+
   try {
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,

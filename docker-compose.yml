@@ -17,4 +17,5 @@ services:
      - "3001:3001"
    environment:
      - NODE_ENV=production
+     - JWT_KEY=voicemodProd
      - MONGO_URI='mongodb://voicemod:v01c3m0d@mongo:27017/admin?authenticationDatabase=admin'
