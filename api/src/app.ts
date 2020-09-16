@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session';
 import { errorHandler } from './middlewares/error-handler';
 import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
+import { signinRouter } from './routes/signin';
 import { NotFoundError } from './errors/not-found-error';
 
 const app: Express = express();
@@ -17,6 +18,7 @@ app.use(
 
 app.use(countryRouter);
 app.use(signupRouter);
+app.use(signinRouter);
 
 /**
  * Catches all non registered routes and throws an error
