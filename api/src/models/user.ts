@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Password } from '../services/password';
+import { CountryDoc } from './country';
 
 // An interface that describes the properties
 // that are required to create a new User
@@ -8,7 +9,7 @@ interface UserAttrs {
   lastname: string;
   email: string;
   password: string;
-  country: string;
+  country: CountryDoc;
   telephone: string;
   postcode: string;
 }
@@ -26,7 +27,7 @@ interface UserDoc extends mongoose.Document {
   lastname: string;
   email: string;
   password: string;
-  country: string;
+  country: CountryDoc;
   telephone: string;
   postcode: string;
 }
@@ -51,8 +52,8 @@ const userSchema = new mongoose.Schema(
       required: true
     },
     country: {
-      type: String,
-      required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Country'
     },
     telephone: {
       type: String,
