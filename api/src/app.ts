@@ -3,7 +3,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { NotFoundError } from './errors/not-found-error';
 import { errorHandler } from './middlewares/error-handler';
-
+import { countryRouter } from './routes/country';
 
 
 const app: Express = express();
@@ -14,6 +14,8 @@ app.use(
     secure: process.env.NODE_ENV !== 'test'
   })
 );
+
+app.use(countryRouter);
 
 /**
  * Catches all non registered routes and throws an error
