@@ -9,6 +9,14 @@ import { BadRequestError} from '../errors/bad-request-error';
 
 const router = express.Router();
 
+/**
+ * Sign in route
+ * @function
+ * @param path Sign in path
+ * @param rules Validation rules
+ * @param validateRequest Validate request middleware
+ * @param callback Route body
+ */
 router.post(
   '/api/users/signin',
   [
