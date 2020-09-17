@@ -40,8 +40,10 @@ it('Has a create account link', async () => {
   expect(length).toEqual(1);
 });
 
-it('Create account link navigates to /signup', async () => {
-
+it.only('Create account link navigates to /signup', async () => {
+  await page.click('#signup');
+  const url = page.url();
+  expect(url).toContain('/signup');
 });
 
 it('Has a login button', async () => {
@@ -109,7 +111,14 @@ it('Error message for invalid credentials', async () => {
 });
 
 it('User navigates to home page upon valid credentials provided', async () => {
-
+  // await page.focus('#email-input');
+  // await page.keyboard.type('jonh.doe@test.com');
+  // await page.focus('#password-input');
+  // await page.keyboard.type('jonhdoespas$');
+  // await page.click('#login');
+  // const url = page.url();
+  // expect(url).toContain('/signup');
+  // Waiting for header implementation 
 });
 
 afterEach(() => {
