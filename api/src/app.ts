@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { json } from 'body-parser';
+import helmet from 'helmet';
 import cookieSession from 'cookie-session';
 import { errorHandler } from './middlewares/error-handler';
 import { countryRouter } from './routes/country';
@@ -17,6 +18,7 @@ app.use(
     secure: process.env.NODE_ENV !== 'test'
   })
 );
+app.use(helmet());
 
 app.use(countryRouter);
 app.use(signupRouter);
