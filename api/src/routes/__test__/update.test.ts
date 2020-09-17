@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { UserAttrs } from '../../models/user';
+import { UserAttrs, User } from '../../models/user';
+import { Password } from '../../services/password';
 import { buildUserObject } from '../../test/setup';
 
 const performSignup = async (user: UserAttrs) => {
@@ -21,6 +22,22 @@ it('returns a 200 on successful update', async () => {
     .expect(200);
   expect(updated.body).not.toBeNull();
   expect(updated.body.name === user.name);
+});
+
+it('successfully update the user in the database', async () => {
+  const user: UserAttrs = await buildUserObject();
+  const response = await performSignup(user);
+  user.name = `${user.name}_updated`;
+  user.newpassword = 'newpassword';
+  await request(app)
+    .put(`/api/users/${response.body.id}`)
+    .send(user)
+    .expect(200);
+  const updatedUser = await User.findOne({ _id: response.body.id });
+  const hashedPassword = Password.toHash(user.password);
+  expect(updatedUser).not.toBeNull();
+  expect(updatedUser!.password).not.toEqual(hashedPassword);
+  expect(updatedUser!.name).toEqual(user.name);
 });
 
 it('returns a 400 with an invalid name', async () => {

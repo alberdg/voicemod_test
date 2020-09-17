@@ -65,7 +65,7 @@ router.put(
       throw new BadRequestError('Email in use');
     }
 
-    const user = User.build({
+    const user = {
       name,
       lastname,
       email,
@@ -73,14 +73,14 @@ router.put(
       country,
       telephone,
       postcode,
-    });
-    await user.save();
+    };
+    await User.updateOne({ _id: id }, { $set: user });
 
     // Generate JWT
     const userJwt = jwt.sign(
       {
-        id: user.id,
-        email: user.email
+        id,
+        email
       },
       process.env.JWT_KEY!
     );
