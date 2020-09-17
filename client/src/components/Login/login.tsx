@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './login.css';
 import HelperMessage from '../Common/helper-message';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
@@ -136,7 +137,7 @@ const Login = (): JSX.Element => {
   const renderSignupButton = (): JSX.Element => {
     return (
       <div className="form-group mx-auto">
-        <a id="signup" href="/signup" className="text-white mt-5">Sign up</a>
+        <Link id="signup" to="/signup" className="text-white mt-5">Sign up</Link>
       </div>
     )
   }
