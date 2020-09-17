@@ -11,7 +11,7 @@ import { SIGNED_IN_USER } from '../../constants';
  * @function
  * @returns component Login component
  */
-const Login = (): JSX.Element => {
+const Login = ({ history }: { history: any }): JSX.Element => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const [ loading, setLoading ] = useState<boolean>(false);
@@ -39,6 +39,7 @@ const Login = (): JSX.Element => {
       if (response && response.data) {
         // Store user in localstorage
         localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
+        history.push('/home');
       } else {
         setError(true);
       }
