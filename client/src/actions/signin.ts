@@ -9,7 +9,11 @@ import { SERVER_URL } from '../constants';
  * @returns response User signed in
  */
 export const signin = async (email: string, password: string): Promise<any> => {
-  const response = await axios.post(`${SERVER_URL}/api/users/signin`,
-    { email, password });
-  return response;
+  try {
+    const response = await axios.post(`${SERVER_URL}/api/users/signin`,
+      { email, password });
+    return response;
+  } catch (err) {
+    return null;
+  }
 }

@@ -100,7 +100,12 @@ it('Error message is provided if password length is above 20 characters', async 
 });
 
 it('Error message for invalid credentials', async () => {
-
+  await page.focus('#email-input');
+  await page.keyboard.type('test@test.com');
+  await page.focus('#password-input');
+  await page.keyboard.type('1234');
+  await page.click('#login');
+  await page.waitFor('#signin-error');
 });
 
 it('User navigates to home page upon valid credentials provided', async () => {

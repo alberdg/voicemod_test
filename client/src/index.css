@@ -18,3 +18,7 @@ code {
   color: #fff;
   border-color: #1573dd !important;
 }
+
+#loading {
+  max-width: 50px;
+}

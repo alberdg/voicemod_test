@@ -3,6 +3,7 @@ import './login.css';
 import HelperMessage from '../Common/helper-message';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { signin } from '../../actions/signin';
+import { SIGNED_IN_USER } from '../../constants';
 
 /**
  * Functional component representing login screen
@@ -12,6 +13,8 @@ import { signin } from '../../actions/signin';
 const Login = (): JSX.Element => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
+  const [ loading, setLoading ] = useState<boolean>(false);
+  const [ error, setError ] = useState<boolean>(false);
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
@@ -22,17 +25,26 @@ const Login = (): JSX.Element => {
   const performSignin = async (event: MouseEvent) => {
     // Prevent event default behaviour
     event.preventDefault();
+    setError(false);
+
     /**
      * Double check just in case user removes disabled property on
      * browsers inspector
     */
     if (validEmail && validPassword) {
+
+      setLoading(true);
       const response = await signin(email, password);
       if (response && response.data) {
-        console.log('Signed in', response.data);
+        // Store user in localstorage
+        localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
+      } else {
+        setError(true);
       }
+      setLoading(false);
     }
   }
+
   /**
    * Renders email input
    * @function
@@ -155,6 +167,11 @@ const Login = (): JSX.Element => {
     )
   }
 
+  /**
+   * Renders voicemod logo
+   * @function
+   * @returns element Voicemod logo
+   */
   const renderLogo = (): JSX.Element => {
     return (
       <div className="row mx-auto">
@@ -162,6 +179,27 @@ const Login = (): JSX.Element => {
           src="https://www.voicemod.net/v3/wp-content/themes/voicemod/inc/assets/img/logo-header.png"
           alt="Voicemod coding challenge"
           className="img-fluid"
+        />
+      </div>
+    )
+  }
+
+  /**
+   * Renders loading spinner
+   * @function
+   * @returns spinner Spinner element
+   */
+  const renderLoading = () => {
+    if (!loading) {
+      return null;
+    }
+    return (
+      <div className="row">
+        <img
+          id="loading"
+          src="/img/loading.gif"
+          alt="Loading"
+          className="img-fluid mx-auto mb-2"
         />
       </div>
     )
@@ -192,6 +230,16 @@ const Login = (): JSX.Element => {
               'alert alert-danger',
               'error',
               'Password must have between 4 and 20 characters'
+            )
+          }
+          {renderLoading()}
+          {
+            renderHelperMessage(
+              error && !loading,
+              'signin-error',
+              "alert alert-danger",
+              'error',
+              'Invalid credentials'
             )
           }
           {renderLoginButton()}
