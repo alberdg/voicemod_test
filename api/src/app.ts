@@ -6,6 +6,7 @@ import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
 import { updateRouter } from './routes/update';
+import { deleteRouter } from './routes/delete';
 import { NotFoundError } from './errors/not-found-error';
 
 const app: Express = express();
@@ -21,6 +22,7 @@ app.use(countryRouter);
 app.use(signupRouter);
 app.use(signinRouter);
 app.use(updateRouter);
+app.use(deleteRouter);
 
 /**
  * Catches all non registered routes and throws an error
