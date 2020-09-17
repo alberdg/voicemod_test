@@ -111,14 +111,13 @@ it('Error message for invalid credentials', async () => {
 });
 
 it('User navigates to home page upon valid credentials provided', async () => {
-  // await page.focus('#email-input');
-  // await page.keyboard.type('jonh.doe@test.com');
-  // await page.focus('#password-input');
-  // await page.keyboard.type('jonhdoespas$');
-  // await page.click('#login');
-  // const url = page.url();
-  // expect(url).toContain('/signup');
-  // Waiting for header implementation 
+  await page.focus('#email-input');
+  await page.keyboard.type('jonh.doe@test.com');
+  await page.focus('#password-input');
+  await page.keyboard.type('jonhdoespas$');
+  await page.click('#login');
+  const url = page.url();
+  expect(url).toContain('/home');
 });
 
 afterEach(() => {
