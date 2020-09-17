@@ -2,16 +2,37 @@ import React, { useState } from 'react';
 import './login.css';
 import HelperMessage from '../Common/helper-message';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
+import { signin } from '../../actions/signin';
+
 /**
  * Functional component representing login screen
  * @function
  * @returns component Login component
  */
-const Login = () => {
+const Login = (): JSX.Element => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
+
+  /**
+   * Performs sign in
+   * @function
+   */
+  const performSignin = async (event: MouseEvent) => {
+    // Prevent event default behaviour
+    event.preventDefault();
+    /**
+     * Double check just in case user removes disabled property on
+     * browsers inspector
+    */
+    if (validEmail && validPassword) {
+      const response = await signin(email, password);
+      if (response && response.data) {
+        console.log('Signed in', response.data);
+      }
+    }
+  }
   /**
    * Renders email input
    * @function
@@ -83,7 +104,14 @@ const Login = () => {
     const disabled = !isValidEmail(email) || !isValidPassword(password);
     return (
       <div className="form-group mx-auto">
-        <button id="login" className="btn btn-primary" disabled={disabled}>Sign in</button>
+        <button
+          id="login"
+          className="btn btn-primary"
+          disabled={disabled}
+          onClick={(event: any) => performSignin(event)}
+        >
+          Sign in
+        </button>
       </div>
     )
   }
@@ -127,7 +155,7 @@ const Login = () => {
     )
   }
 
-  const renderLogo = () => {
+  const renderLogo = (): JSX.Element => {
     return (
       <div className="row mx-auto">
         <img
