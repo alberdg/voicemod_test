@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import helmet from 'helmet';
 import cookieSession from 'cookie-session';
@@ -10,15 +10,37 @@ import { updateRouter } from './routes/update';
 import { deleteRouter } from './routes/delete';
 import { NotFoundError } from './errors/not-found-error';
 
+const allowedOrigins = [ 'http://localhost:3000' ];
+
+/**
+ * Sets security headers for given response
+ * @function
+ * @param <Object> req - Http request
+ * @param <Object> res - Http response
+ * @param <Object> next - Callback
+ * @returns <void>
+ */
+const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('X-Powered-By', 'VOICEMOD API');
+  const origin: string = req.headers.origin!;
+  if(allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+  next();
+}
+
+
 const app: Express = express();
 app.use(json());
+app.use(helmet());
+app.use(setCorsHeaders);
 app.use(
   cookieSession({
     signed: false,
     secure: process.env.NODE_ENV !== 'test'
   })
 );
-app.use(helmet());
 
 app.use(countryRouter);
 app.use(signupRouter);
