@@ -5,6 +5,7 @@ import { errorHandler } from './middlewares/error-handler';
 import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
+import { updateRouter } from './routes/update';
 import { NotFoundError } from './errors/not-found-error';
 
 const app: Express = express();
@@ -19,6 +20,7 @@ app.use(
 app.use(countryRouter);
 app.use(signupRouter);
 app.use(signinRouter);
+app.use(updateRouter);
 
 /**
  * Catches all non registered routes and throws an error

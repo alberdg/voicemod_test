@@ -9,6 +9,7 @@ export interface UserAttrs {
   lastname: string;
   email: string;
   password: string;
+  newpassword?: string;
   country: CountryDoc;
   telephone: string;
   postcode: string;

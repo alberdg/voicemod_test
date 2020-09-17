@@ -5,15 +5,16 @@ import { buildUserObject } from '../../test/setup';
 
 const performSignup = async (user: UserAttrs) => {
   const response = await request(app)
-    .put('/api/users/signup')
+    .post('/api/users/signup')
     .send(user);
-  return response
+  return response;
 }
 
 it('returns a 200 on successful update', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
-  user.name = `${user.name}_updated`
+  user.name = `${user.name}_updated`;
+  user.newpassword = 'newpassword';
   const updated = await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
@@ -26,7 +27,8 @@ it('returns a 400 with an invalid name', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.name = '';
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -36,7 +38,8 @@ it('returns a 400 with an invalid last name', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.lastname = '';
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -46,7 +49,8 @@ it('returns a 400 with an invalid email', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.email = '';
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -56,7 +60,8 @@ it('returns a 400 with an invalid password', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.password = '';
-  return request(app)
+  user.newpassword = '';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -64,11 +69,12 @@ it('returns a 400 with an invalid password', async () => {
 
 
 it('returns a 400 with an invalid country', async () => {
-  const user = await buildUserObject();
+  const user: any = await buildUserObject();
   const response = await performSignup(user);
   const fakeCountryId = 'fakeId';
   user.country = fakeCountryId;
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -78,7 +84,8 @@ it('returns a 400 with an invalid telephone', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.telephone = '';
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -88,7 +95,8 @@ it('returns a 400 with an invalid postcode', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.postcode = '';
-  return request(app)
+  user.newpassword = 'newpassword';
+  await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
     .expect(400);
@@ -97,7 +105,11 @@ it('returns a 400 with an invalid postcode', async () => {
 
 it('disallows duplicate emails', async () => {
   const user: UserAttrs = await buildUserObject();
+  const userB: UserAttrs = { ...user, email: 'anotheremail@test.com' };
   const response = await performSignup(user);
+  await performSignup(userB);
+  user.email = 'anotheremail@test.com';
+  user.newpassword = 'newpassword';
   await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
@@ -105,9 +117,10 @@ it('disallows duplicate emails', async () => {
 });
 
 
-it('sets a cookie after successful signup', async () => {
+it('sets a cookie after successful update', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
+  user.newpassword = 'newpassword';
   const updateResponse = await request(app)
     .put(`/api/users/${response.body.id}`)
     .send(user)
