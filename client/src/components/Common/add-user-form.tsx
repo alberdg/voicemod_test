@@ -3,6 +3,8 @@ import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { renderInputField, renderSpinner, renderHelperMessage } from './';
 import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
+import { signup } from '../../actions/signup';
+import { SIGNED_IN_USER } from '../../constants';
 
 /**
  * Add user form component
@@ -21,7 +23,7 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const [ country, setCountry ] = useState<string>('-1');
   const [ countries, setCountries ] = useState<Country[]>([]);
   const [ loading, setLoading ] = useState<boolean>(true);
-  const [ error, setError ] = useState<boolean>(false);
+  const [ errorMessage, setErrorMessage ] = useState<string>('');
 
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
@@ -43,7 +45,7 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
    */
   const handleCountryChange = (event: React.FormEvent<HTMLSelectElement>) => {
     const { selectedIndex } = event.currentTarget;
-    const country = selectedIndex ? countries[selectedIndex].id : '-1';
+    const country: string = selectedIndex ? countries[selectedIndex].id : '-1';
     setCountry(country);
   }
 
@@ -52,8 +54,22 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
    * @function
    * @param event Form submitted event
    */
-  const performSignup = (event: MouseEvent) => {
+  const performSignup = async (event: MouseEvent) => {
     event.preventDefault();
+    const validForm: boolean = isValidForm();
+    setLoading(true);
+    if (validForm) {
+      const response = await signup(name, lastname, email, password, telephone, country, postcode)
+      if (response && response.status === 201) {
+        localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
+        history.push('/home');
+      } else if (response && response.status === 400) {
+        setErrorMessage('User already exists');
+      } else {
+        setErrorMessage('Error in user sign up');
+      }
+      setLoading(false);
+    }
   }
 
   /**
@@ -244,29 +260,46 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const renderError = (): JSX.Element => {
     return (
         renderHelperMessage(
-         error,
+         !errorMessage.isEmpty(),
          'signup-error',
          "alert alert-danger",
          'error',
-         'Invalid credentials'
+         errorMessage
        )
     );
   }
 
+  /**
+   * Renders add user form
+   * @function
+   * @returns element Add user form element
+   */
+  const renderForm = () : JSX.Element => {
+    if (loading) return null as any;
+    return (
+      <form noValidate className="mt-3">
+        {renderName()}
+        {renderLastname()}
+        {renderEmail()}
+        {renderPassword()}
+        {renderRepeatPassword()}
+        {renderTelephone()}
+        {renderCountries()}
+        {renderPostcode()}
+        {renderError()}
+        {renderSignupButton()}
+      </form>
+    );
+  }
+
   return (
-    <form noValidate className="mt-3">
-      {renderName()}
-      {renderLastname()}
-      {renderEmail()}
-      {renderPassword()}
-      {renderRepeatPassword()}
-      {renderTelephone()}
-      {renderCountries()}
-      {renderPostcode()}
+    <>
+      {renderForm()}
       {renderSpinner(loading)}
-      {renderError()}
-      {renderSignupButton()}
-    </form>
-  );
+    </>
+  )
+
+
+
 }
 export default AddUserForm;

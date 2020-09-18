@@ -2,9 +2,5 @@
   display: flex;
   align-items: center;
   justify-content: center; flex-direction: column;
-  height: 700px;
-}
-
-#login {
-  width: 100%;
+  min-height: 700px;
 }

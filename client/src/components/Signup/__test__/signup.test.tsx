@@ -9,7 +9,7 @@ beforeEach(async () => {
   });
   page = await browser.newPage();
   await page.goto('localhost:3000/signup');
-  await page.waitFor(SIGNUP_BUTTON);
+  await page.waitFor('#name-input');
 });
 
 
@@ -59,8 +59,27 @@ it('Has a back button', async () => {
   expect(length).toEqual(1);
 });
 
-it('Create account button navigates to /home', async () => {
+it('Error message displayed if account exists', async () => {
+  await page.focus('#name-input');
+  await page.keyboard.type('test');
+  await page.focus('#lastname-input');
+  await page.keyboard.type('test');
+  await page.focus('#email-input');
+  await page.keyboard.type('test@test.com');
+  await page.focus('#password-input');
+  await page.keyboard.type('test');
+  await page.focus('#repeat-password-input');
+  await page.keyboard.type('test');
+  await page.select("select#countries-select", "Albania")
+  await page.focus('#telephone-input');
+  await page.keyboard.type('test');
+  await page.focus('#postcode-input');
+  await page.keyboard.type('test');
+  await page.click('#signup');
 
+  await page.waitFor('#signup-error');
+  const text = await page.$eval('span#signup-error', el => el.innerHTML);
+  expect(text).toEqual('User already exists');
 });
 
 it('Create button is disabled if require fields are not provided', async () => {
