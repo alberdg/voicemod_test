@@ -6,6 +6,7 @@ import './index.css';
 import './utils/string-extension';
 import Login from './components/Login/login';
 import Signup from './components/Signup/signup';
+import Home from './components/Home/home';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
@@ -14,6 +15,7 @@ ReactDOM.render(
       <Switch>
         <Route exact path="/" component={Login}/>
         <Route exact path="/signup" component={Signup}/>
+        <Route exact path="/home" component={Home}/>
       </Switch>
     </BrowserRouter>
   </React.StrictMode>,
