@@ -1,0 +1,9 @@
+#header {
+  height: 50px;
+}
+
+#sign-out {
+  position: absolute;
+  right: 10%;
+  top: 10px;
+}
