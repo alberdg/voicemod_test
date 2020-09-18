@@ -10,6 +10,7 @@ import AddUserForm from '../Common/add-user-form';
  * @returns singup Signup element
  */
 const Signup = ({ history }: { history: any }): JSX.Element => {
+
   /**
    * Renders voicemod logo
    * @function

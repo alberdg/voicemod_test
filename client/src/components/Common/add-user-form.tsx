@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { renderInputField, renderSpinner, renderHelperMessage } from './';
+import { fetchCountries } from '../../actions/countries';
+import { Country } from '../../interfaces/country';
 
 /**
  * Add user form component
@@ -16,13 +18,34 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const [ repeatPassword, setRepeatPassword ] = useState<string>('');
   const [ telephone, setTelephone ] = useState<string>('');
   const [ postcode, setPostcode ] = useState<string>('');
-  const [ country, setCountry ] = useState<string>('');
-  const [ loading, setLoading ] = useState<boolean>(false);
+  const [ country, setCountry ] = useState<string>('-1');
+  const [ countries, setCountries ] = useState<Country[]>([]);
+  const [ loading, setLoading ] = useState<boolean>(true);
   const [ error, setError ] = useState<boolean>(false);
 
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
+  // Let's fetch countries here for now. Once we have a context we will use it
+  useEffect(() => {
+    const fetchData = async () => {
+      const countries = await fetchCountries();
+      setCountries(countries);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  /**
+   * onChange handler for country
+   * @function
+   * @param event OnChange event
+   */
+  const handleCountryChange = (event: React.FormEvent<HTMLSelectElement>) => {
+    const { selectedIndex } = event.currentTarget;
+    const country = selectedIndex ? countries[selectedIndex].id : '-1';
+    setCountry(country);
+  }
 
   /**
    * Performs user signup
@@ -41,7 +64,7 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const isValidForm = () => {
     return !name.isEmpty() && !lastname.isEmpty() && validEmail &&
       validPassword && repeatPassword === password && !telephone.isEmpty() &&
-      !postcode.isEmpty();
+      !postcode.isEmpty() && country !== '-1';
   }
 
   /**
@@ -192,7 +215,8 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
    * @returns options Country options
    */
   const renderCountryOptions = (): any => {
-    return null;
+    return countries.map((country: Country) =>
+      <option className="country" key={country.id} id={country.id}>{country.name}</option>);
   }
 
   /**
@@ -203,7 +227,8 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const renderCountries = (): JSX.Element => {
     return (
       <div className="form-group">
-        <select id="countries-select" className="form-control">
+        <select id="countries-select" className="form-control"
+          onChange={event => handleCountryChange(event)}>
           <option id="-1">Please select a country</option>
           {renderCountryOptions()}
         </select>

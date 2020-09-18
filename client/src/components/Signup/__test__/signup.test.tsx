@@ -103,6 +103,12 @@ it('Displays countries select element', async () => {
   expect(length).toEqual(1);
 })
 
+it.only('Has 194 countries on the list', async () => {
+  await page.waitFor('.country');
+  const length = await page.$$eval('.country', el => el.length);
+  expect(length).toEqual(194);
+});
+
 afterEach(() => {
   page.close();
   browser.close();
