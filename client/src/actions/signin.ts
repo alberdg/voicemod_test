@@ -14,6 +14,6 @@ export const signin = async (email: string, password: string): Promise<any> => {
       { email, password });
     return response;
   } catch (err) {
-    return null;
+    return err.response;
   }
 }

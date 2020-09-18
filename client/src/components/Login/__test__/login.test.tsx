@@ -9,7 +9,7 @@ beforeEach(async () => {
   });
   page = await browser.newPage();
   await page.goto('localhost:3000');
-  await page.waitFor(LOGIN_BUTTON);
+  await page.waitForSelector(LOGIN_BUTTON);
 });
 
 
@@ -40,7 +40,7 @@ it('Has a create account link', async () => {
   expect(length).toEqual(1);
 });
 
-it.only('Create account link navigates to /signup', async () => {
+it('Create account link navigates to /signup', async () => {
   await page.click('#signup');
   const url = page.url();
   expect(url).toContain('/signup');
@@ -110,12 +110,13 @@ it('Error message for invalid credentials', async () => {
   await page.waitFor('#signin-error');
 });
 
-it('User navigates to home page upon valid credentials provided', async () => {
+it.only('User navigates to home page upon valid credentials provided', async () => {
   await page.focus('#email-input');
   await page.keyboard.type('jonh.doe@test.com');
   await page.focus('#password-input');
   await page.keyboard.type('jonhdoespas$');
   await page.click('#login');
+  await page.waitFor(2000); // FIXME - Once header is implemented we will use waitForSelector('#header')
   const url = page.url();
   expect(url).toContain('/home');
 });
