@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
-import HelperMessage from '../Common/helper-message';
 import Logo from '../Common/logo';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { signin } from '../../actions/signin';
 import { SIGNED_IN_USER } from '../../constants';
-import { renderSpinner } from '../Common';
+import { renderSpinner, renderInputField, renderHelperMessage } from '../Common';
 /**
  * Functional component representing login screen
  * @function
@@ -16,7 +15,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const [ loading, setLoading ] = useState<boolean>(false);
-  const [ error, setError ] = useState<boolean>(false);
+  const [ errorMessage, setErrorMessage ] = useState<string>('');
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
@@ -27,7 +26,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
   const performSignin = async (event: MouseEvent) => {
     // Prevent event default behaviour
     event.preventDefault();
-    setError(false);
+    setErrorMessage('')
 
     /**
      * Double check just in case user removes disabled property on
@@ -37,12 +36,14 @@ const Login = ({ history } : { history : any }): JSX.Element => {
 
       setLoading(true);
       const response = await signin(email, password);
-      if (response && response.data) {
+      if (response && response.status === 200) {
         // Store user in localstorage
         localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
         history.push('/home');
+      } else if (response && response.status === 400) {
+        setErrorMessage('Invalid credentials');
       } else {
-        setError(true);
+        setErrorMessage('Sign in error');
       }
       setLoading(false);
     }
@@ -54,41 +55,21 @@ const Login = ({ history } : { history : any }): JSX.Element => {
    * @returns email Email element
    */
   const renderEmail = (): JSX.Element => {
-    return (
-      <div className="form-group">
-        <input
-          id="email-input"
-          className="form-control"
-          placeholder="Email"
-          type="email"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
-        />
-      </div>
+    const display: boolean = !validEmail && !email.isEmpty();
+    return renderInputField('email-input',
+      'form-control',
+      'Email',
+      email,
+      setEmail,
+      'email',
+      display,
+      'email-error',
+      'alert alert-danger',
+      'error',
+      'Invalid email address format'
     );
   }
 
-  /**
-   * Renders a helper message
-   * @function
-   * @param display Flag indicating if Helper message should be displayed
-   * @param id Helper message id
-   * @param classes Helper message classes
-   * @param message Helper message
-   * @returns helperMessage Helper message element
-   */
-  const renderHelperMessage = (display: boolean, id: string,
-    alertClasses: string, classes: string, message: string): JSX.Element => {
-    return (
-      <HelperMessage
-        display={display}
-        message={message}
-        id={id}
-        classes={classes}
-        alertClasses={alertClasses}
-      />
-    )
-  }
 
   /**
    * Renders password input
@@ -96,18 +77,18 @@ const Login = ({ history } : { history : any }): JSX.Element => {
    * @returns password Password element
    */
   const renderPassword = (): JSX.Element => {
-    return (
-      <div className="form-group">
-        <input
-          id="password-input"
-          className="form-control"
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={event => setPassword(event.target.value)}
-        />
-      </div>
-    );
+    const display: boolean = !validPassword && !password.isEmpty();
+    return renderInputField('password-input',
+    'form-control',
+    'Password',
+    password,
+    setPassword,
+    'password',
+    display,
+    'password-error',
+    'alert alert-danger',
+    'error',
+    'Password must have between 4 and 20 characters');
   }
 
   /**
@@ -181,8 +162,6 @@ const Login = ({ history } : { history : any }): JSX.Element => {
     )
   }
 
-
-
   return (
     <div id="login-container">
       <div id="login-wrapper" className="col-md-6 col-sm-12 text-center">
@@ -191,35 +170,13 @@ const Login = ({ history } : { history : any }): JSX.Element => {
         {renderSubtitle()}
         <form noValidate className="mt-3">
           {renderEmail()}
-          {
-            renderHelperMessage(
-              !validEmail && email.trim().length > 0,
-              'email-error',
-              "alert alert-danger",
-              'error',
-              'Invalid email address format'
-            )
-          }
           {renderPassword()}
-          {
-            renderHelperMessage(
-              !validPassword && password.trim().length > 0,
-              'password-error',
-              'alert alert-danger',
-              'error',
-              'Password must have between 4 and 20 characters'
-            )
-          }
           {renderSpinner(loading)}
-          {
-            renderHelperMessage(
-              error && !loading,
-              'signin-error',
-              "alert alert-danger",
-              'error',
-              'Invalid credentials'
-            )
-          }
+          {renderHelperMessage(!errorMessage.isEmpty(),
+            'signin-error',
+            'alert alert-danger',
+            'error',
+            errorMessage)}
           {renderLoginButton()}
           {renderSignupButton()}
         </form>
