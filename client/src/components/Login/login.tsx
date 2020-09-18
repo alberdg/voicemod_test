@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
 import HelperMessage from '../Common/helper-message';
+import Logo from '../Common/logo';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { signin } from '../../actions/signin';
 import { SIGNED_IN_USER } from '../../constants';
-
+import { renderSpinner } from '../Common';
 /**
  * Functional component representing login screen
  * @function
@@ -176,36 +177,11 @@ const Login = ({ history } : { history : any }): JSX.Element => {
    */
   const renderLogo = (): JSX.Element => {
     return (
-      <div className="row mx-auto">
-        <img
-          src="https://www.voicemod.net/v3/wp-content/themes/voicemod/inc/assets/img/logo-header.png"
-          alt="Voicemod coding challenge"
-          className="img-fluid"
-        />
-      </div>
+      <Logo />
     )
   }
 
-  /**
-   * Renders loading spinner
-   * @function
-   * @returns spinner Spinner element
-   */
-  const renderLoading = () => {
-    if (!loading) {
-      return null;
-    }
-    return (
-      <div className="row">
-        <img
-          id="loading"
-          src="/img/loading.gif"
-          alt="Loading"
-          className="img-fluid mx-auto mb-2"
-        />
-      </div>
-    )
-  }
+
 
   return (
     <div id="login-container">
@@ -234,7 +210,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
               'Password must have between 4 and 20 characters'
             )
           }
-          {renderLoading()}
+          {renderSpinner(loading)}
           {
             renderHelperMessage(
               error && !loading,
