@@ -8,6 +8,7 @@ import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
 import { updateRouter } from './routes/update';
 import { deleteRouter } from './routes/delete';
+import { usersRouter } from './routes/users';
 import { NotFoundError } from './errors/not-found-error';
 
 const allowedOrigins = [ 'http://localhost:3000' ];
@@ -47,6 +48,7 @@ app.use(signupRouter);
 app.use(signinRouter);
 app.use(updateRouter);
 app.use(deleteRouter);
+app.use(usersRouter);
 
 /**
  * Catches all non registered routes and throws an error
