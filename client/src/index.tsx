@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
+import './utils/string-extension';
 import Login from './components/Login/login';
+import Signup from './components/Signup/signup';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
@@ -11,6 +13,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={Login}/>
+        <Route exact path="/signup" component={Signup}/>
       </Switch>
     </BrowserRouter>
   </React.StrictMode>,
