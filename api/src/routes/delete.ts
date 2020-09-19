@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import 'express-async-errors';
-import { User } from '../models/user';
+import { User, UserDoc } from '../models/user';
 const router = Router();
 
 /**
@@ -14,8 +14,9 @@ router.delete(
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const result = await User.deleteOne({ _id: id });
+    await User.deleteOne({ _id: id });
 
+    const result: UserDoc[] = await User.find({});
     res.status(200).send(result);
   }
 );
