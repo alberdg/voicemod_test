@@ -24,6 +24,18 @@ code {
   border-color: #1573dd !important;
 }
 
+.bg-secondary {
+  background-color: #00C1FF !important;
+  border-color: #00C1FF !important;
+}
+
 #loading {
   max-width: 50px;
+}
+
+.page-container {
+  margin-top: 50px;
+  min-height: 800px;
+  background-color: #FFF;
+  padding: 20px;
 }

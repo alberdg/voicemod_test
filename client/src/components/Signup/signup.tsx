@@ -54,7 +54,7 @@ const Signup = ({ history }: { history: any }): JSX.Element => {
    * @returns element Add user form element
    */
   const renderAddUserForm = (): JSX.Element => {
-    return <AddUserForm history={history}/>
+    return <AddUserForm history={history} shouldRedirect={true} />
   }
 
   return (
