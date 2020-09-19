@@ -1,21 +1,22 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { User } from '../../models/user';
+import { UserAttrs } from '../../models/user';
 import { buildUserObject } from '../../test/setup';
+import { performSignup } from '../../test/utils';
 
 it('deletes the user with the given id', async () => {
-  const user = await buildUserObject();
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send(user)
-    .expect(201);
+  const user: UserAttrs = await buildUserObject();
+  const userB: UserAttrs = await buildUserObject();
+  userB.email = 'deleteme@test.com';
+  const response = await performSignup(user);
+  const responseB = await performSignup(userB);
+
 
   const deleteResponse = await request(app)
-    .delete(`/api/users/${response.body.id}`)
+    .delete(`/api/users/${responseB.body.id}`)
     .send()
     .expect(200);
-  expect(deleteResponse.body.ok).toEqual(1);
-  expect(deleteResponse.body.deletedCount).toEqual(1);
-  const userCount = await User.findOne({ _id: response.body.id }).countDocuments();
-  expect(userCount).toEqual(0);
+  expect(deleteResponse.body).not.toBeNull();
+  expect(deleteResponse.body.length).toEqual(1);
+  expect(deleteResponse.body[0].id).toEqual(response.body.id);
 });

@@ -4,12 +4,7 @@ import { UserAttrs, User } from '../../models/user';
 import { Password } from '../../services/password';
 import { buildUserObject } from '../../test/setup';
 
-const performSignup = async (user: UserAttrs) => {
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send(user);
-  return response;
-}
+import { performSignup } from '../../test/utils';
 
 it('returns a 200 on successful update', async () => {
   const user: UserAttrs = await buildUserObject();

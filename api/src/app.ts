@@ -8,6 +8,7 @@ import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
 import { updateRouter } from './routes/update';
 import { deleteRouter } from './routes/delete';
+import { usersRouter } from './routes/users';
 import { NotFoundError } from './errors/not-found-error';
 
 const allowedOrigins = [ 'http://localhost:3000' ];
@@ -26,6 +27,7 @@ const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
   if(allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
   }
   next();
 }
@@ -47,6 +49,7 @@ app.use(signupRouter);
 app.use(signinRouter);
 app.use(updateRouter);
 app.use(deleteRouter);
+app.use(usersRouter);
 
 /**
  * Catches all non registered routes and throws an error
