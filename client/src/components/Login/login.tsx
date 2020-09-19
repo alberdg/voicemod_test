@@ -39,7 +39,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
       if (response && response.status === 200) {
         // Store user in localstorage
         localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
-        history.push('/home');
+        history.push('/users');
       } else if (response && response.status === 400) {
         setErrorMessage('Invalid credentials');
       } else {

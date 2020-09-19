@@ -8,15 +8,17 @@ import './utils/string-extension';
 import Login from './components/Login/login';
 import Signup from './components/Signup/signup';
 import Home from './components/Home/home';
+import AddUser from './components/AddUser/add-user';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={Login}/>
-        <Route exact path="/signup" component={Signup}/>
-        <Route exact path="/home" component={Home}/>
+        <Route exact path="/" component={Login} />
+        <Route exact path="/signup" component={Signup} />
+        <Route exact path="/users" component={Home} />
+        <Route exact path="/users/add" component={AddUser} />
       </Switch>
     </BrowserRouter>
   </React.StrictMode>,

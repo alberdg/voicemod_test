@@ -26,7 +26,7 @@ const Home = ({ history } : { history : any }) => {
   // FIXME -> Move table to a component
   return (
     <>
-      <Header history={history} />
+      <Header history={history}  active="users"/>
       <div className="row">
         <div className="col-sm-12 text-center" id="home">
           {renderTitle()}

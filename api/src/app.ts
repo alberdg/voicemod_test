@@ -11,7 +11,7 @@ import { deleteRouter } from './routes/delete';
 import { usersRouter } from './routes/users';
 import { NotFoundError } from './errors/not-found-error';
 
-const allowedOrigins = [ 'http://localhost:3000' ];
+const allowedOrigins = [ 'http://localhost:3000', 'http://localhost' ];
 
 /**
  * Sets security headers for given response
@@ -24,6 +24,7 @@ const allowedOrigins = [ 'http://localhost:3000' ];
 const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Powered-By', 'VOICEMOD API');
   const origin: string = req.headers.origin!;
+  console.log(origin);
   if(allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

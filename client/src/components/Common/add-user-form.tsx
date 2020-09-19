@@ -10,9 +10,10 @@ import { SIGNED_IN_USER } from '../../constants';
  * Add user form component
  * @function
  * @param history History object
+ * @param shouldRedirect Flag indicating if component should redirect to home
  * @returns singup Signup element
  */
-const AddUserForm = ({ history } : { history: any }): JSX.Element => {
+const AddUserForm = ({ history, shouldRedirect = true } : { history: any, shouldRedirect: boolean }): JSX.Element => {
   const [ name, setName ] = useState<string>('');
   const [ lastname, setLastname ] = useState<string>('');
   const [ email, setEmail ] = useState<string>('');
@@ -24,7 +25,7 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const [ countries, setCountries ] = useState<Country[]>([]);
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
-
+  const [ successMessage, setSuccessMessage ] = useState<string>('');
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
@@ -37,6 +38,21 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
     }
     fetchData();
   }, []);
+
+  /**
+   * Resets the form
+   * @function
+   */
+  const resetForm = () => {
+    setName('');
+    setLastname('');
+    setEmail('');
+    setPassword('');
+    setRepeatPassword('');
+    setTelephone('');
+    setPostcode('');
+    setCountry('');
+  }
 
   /**
    * onChange handler for country
@@ -57,12 +73,20 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   const performSignup = async (event: MouseEvent) => {
     event.preventDefault();
     const validForm: boolean = isValidForm();
+    setErrorMessage('');
+    setSuccessMessage('');
     setLoading(true);
     if (validForm) {
       const response = await signup(name, lastname, email, password, telephone, country, postcode)
       if (response && response.status === 201) {
-        localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
-        history.push('/home');
+        if (shouldRedirect) {
+          localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
+          setLoading(false);
+          return history.push('/home');
+        } else {
+          setSuccessMessage('User successfully added');
+          resetForm();
+        }
       } else if (response && response.status === 400) {
         setErrorMessage('User already exists');
       } else {
@@ -244,7 +268,8 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
     return (
       <div className="form-group">
         <select id="countries-select" className="form-control"
-          onChange={event => handleCountryChange(event)}>
+          onChange={event => handleCountryChange(event)}
+          value={country}>
           <option id="-1">Please select a country</option>
           {renderCountryOptions()}
         </select>
@@ -270,6 +295,23 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
   }
 
   /**
+   * Renders signup success
+   * @function
+   * @returns element Signup success element
+   */
+  const renderSuccess = (): JSX.Element => {
+    return (
+        renderHelperMessage(
+         !successMessage.isEmpty(),
+         'signup-success',
+         "alert alert-success",
+         'success',
+         successMessage
+       )
+    );
+  }
+
+  /**
    * Renders add user form
    * @function
    * @returns element Add user form element
@@ -287,6 +329,7 @@ const AddUserForm = ({ history } : { history: any }): JSX.Element => {
         {renderCountries()}
         {renderPostcode()}
         {renderError()}
+        {renderSuccess()}
         {renderSignupButton()}
       </form>
     );

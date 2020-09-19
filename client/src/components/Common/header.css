@@ -7,3 +7,22 @@
   right: 10%;
   top: 10px;
 }
+
+#add-user-link {
+  position: absolute;
+  right: 20%;
+  top: 10px;
+}
+
+
+.nav-item {
+  padding: 16px;
+}
+
+.active {
+  background-color: #fff;
+}
+
+.active > a {
+  color: #00C1FF !important;  
+}

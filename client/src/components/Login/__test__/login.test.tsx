@@ -107,10 +107,10 @@ it('Error message for invalid credentials', async () => {
   await page.focus('#password-input');
   await page.keyboard.type('1234');
   await page.click('#login');
-  await page.waitFor('#signin-error');
+  await page.waitForSelector('#signin-error');
 });
 
-it.only('User navigates to home page upon valid credentials provided', async () => {
+it.only('User navigates to users page upon valid credentials provided', async () => {
   await page.focus('#email-input');
   await page.keyboard.type('jonh.doe@test.com');
   await page.focus('#password-input');
@@ -118,7 +118,7 @@ it.only('User navigates to home page upon valid credentials provided', async () 
   await page.click('#login');
   await page.waitFor(2000); // FIXME - Once header is implemented we will use waitForSelector('#header')
   const url = page.url();
-  expect(url).toContain('/home');
+  expect(url).toContain('/users');
 });
 
 afterEach(() => {
