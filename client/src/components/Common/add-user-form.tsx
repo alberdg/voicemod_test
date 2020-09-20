@@ -6,6 +6,7 @@ import { Country } from '../../interfaces/country';
 import { signup } from '../../actions/signup';
 import { SIGNED_IN_USER } from '../../constants';
 import { AppContext } from '../../context/app-context';
+import { UserContext } from '../../context/user-context';
 
 /**
  * Add user form component
@@ -15,15 +16,12 @@ import { AppContext } from '../../context/app-context';
  * @returns singup Signup element
  */
 const AddUserForm = ({ history, shouldRedirect = true } : { history: any, shouldRedirect: boolean }): JSX.Element => {
-  const { countries, setCountries } = useContext(AppContext);
-  const [ name, setName ] = useState<string>('');
-  const [ lastname, setLastname ] = useState<string>('');
-  const [ email, setEmail ] = useState<string>('');
-  const [ password, setPassword ] = useState<string>('');
-  const [ repeatPassword, setRepeatPassword ] = useState<string>('');
-  const [ telephone, setTelephone ] = useState<string>('');
-  const [ postcode, setPostcode ] = useState<string>('');
-  const [ country, setCountry ] = useState<string>('-1');
+  const { countries, setCountries} = useContext(AppContext);
+  const {
+    name, setName, lastname, setLastname, email, setEmail, password, setPassword,
+    repeatPassword, setRepeatPassword, country, setCountry, telephone, setTelephone,
+    postcode, setPostcode
+  } = useContext(UserContext);
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
   const [ successMessage, setSuccessMessage ] = useState<string>('');
@@ -31,6 +29,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
   const validPassword = isValidPassword(password);
 
   useEffect(() => {
+    resetForm();
     if (!Array.isArray(countries) || countries.length === 0) {
       const fetchData = async () => {
         const response = await fetchCountries();
@@ -86,7 +85,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
         if (shouldRedirect) {
           localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
           setLoading(false);
-          return history.push('/home');
+          return history.push('/users');
         } else {
           setSuccessMessage('User successfully added');
           resetForm();
