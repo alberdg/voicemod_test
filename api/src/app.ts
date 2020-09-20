@@ -9,6 +9,7 @@ import { signinRouter } from './routes/signin';
 import { updateRouter } from './routes/update';
 import { deleteRouter } from './routes/delete';
 import { usersRouter } from './routes/users';
+import { showRouter } from './routes/show';
 import { NotFoundError } from './errors/not-found-error';
 
 const allowedOrigins = [ 'http://localhost:3000', 'http://localhost' ];
@@ -24,7 +25,6 @@ const allowedOrigins = [ 'http://localhost:3000', 'http://localhost' ];
 const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Powered-By', 'VOICEMOD API');
   const origin: string = req.headers.origin!;
-  console.log(origin);
   if(allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -51,6 +51,7 @@ app.use(signinRouter);
 app.use(updateRouter);
 app.use(deleteRouter);
 app.use(usersRouter);
+app.use(showRouter);
 
 /**
  * Catches all non registered routes and throws an error
