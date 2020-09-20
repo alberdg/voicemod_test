@@ -9,8 +9,8 @@ import { SERVER_URL } from '../constants';
 export const fetchCountries = async (): Promise<any> => {
   try {
     const response = await axios.get(`${SERVER_URL}/api/countries`);
-    return response.data;
+    return response;
   } catch (err) {
-    return null;
+    return err.response;
   }
 }

@@ -3,7 +3,10 @@ import { Country } from '../interfaces/country';
 
 
 
-export const AppContext = createContext({});
+export const AppContext = createContext({
+  countries: [] as any,
+  setCountries: (countries: Country[]) : void => {}
+});
 
 /**
  * App context responsible for holding app data

@@ -1,3 +1,4 @@
+
 /**
  * Validates an email address
  * @function
