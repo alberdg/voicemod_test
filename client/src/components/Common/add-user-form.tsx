@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { renderInputField, renderSpinner, renderHelperMessage } from './';
 import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
 import { signup } from '../../actions/signup';
 import { SIGNED_IN_USER } from '../../constants';
+import { AppContext } from '../../context/app-context';
 
 /**
  * Add user form component
@@ -14,6 +15,7 @@ import { SIGNED_IN_USER } from '../../constants';
  * @returns singup Signup element
  */
 const AddUserForm = ({ history, shouldRedirect = true } : { history: any, shouldRedirect: boolean }): JSX.Element => {
+  const { countries, setCountries } = useContext(AppContext);
   const [ name, setName ] = useState<string>('');
   const [ lastname, setLastname ] = useState<string>('');
   const [ email, setEmail ] = useState<string>('');
@@ -22,21 +24,23 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
   const [ telephone, setTelephone ] = useState<string>('');
   const [ postcode, setPostcode ] = useState<string>('');
   const [ country, setCountry ] = useState<string>('-1');
-  const [ countries, setCountries ] = useState<Country[]>([]);
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
   const [ successMessage, setSuccessMessage ] = useState<string>('');
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
-  // Let's fetch countries here for now. Once we have a context we will use it
   useEffect(() => {
-    const fetchData = async () => {
-      const countries = await fetchCountries();
-      setCountries(countries);
-      setLoading(false);
+    if (!Array.isArray(countries) || countries.length === 0) {
+      const fetchData = async () => {
+        const response = await fetchCountries();
+        if (response && response.status === 200) {
+          setCountries(response.data);
+        }
+        setLoading(false);
+      }
+      fetchData();
     }
-    fetchData();
   }, []);
 
   /**

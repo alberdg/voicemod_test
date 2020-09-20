@@ -1,6 +1,5 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
-const SIGNUP_BUTTON = '#signup'
-
+import { addUser, removeTestUser } from '../../../test/utils';
 let browser: Browser, page: Page;
 
 beforeEach(async () => {
@@ -9,7 +8,7 @@ beforeEach(async () => {
   });
   page = await browser.newPage();
   await page.goto('localhost:3000/signup');
-  await page.waitFor('#name-input');
+  await page.waitForSelector('#name-input');
 });
 
 
@@ -77,7 +76,7 @@ it('Error message displayed if account exists', async () => {
   await page.keyboard.type('test');
   await page.click('#signup');
 
-  await page.waitFor('#signup-error');
+  await page.waitForSelector('#signup-error');
   const text = await page.$eval('span#signup-error', el => el.innerHTML);
   expect(text).toEqual('User already exists');
 });
@@ -110,11 +109,33 @@ it('Error message is provided if password length is above 20 characters', async 
 });
 
 it('Error message if email exists', async () => {
-  await page.focus('#email-input');
-  await page.keyboard.type('jonh.doe@test.com');
-  await page.click('#signup');
-  const text = await page.$eval('span#email-error', el => el.innerHTML);
-  expect(text).toEqual('User already exists');
+  const email: string = `adduser.${new Date().getTime()}@test.com`;
+  try {
+    await addUser(page, email);
+    await page.focus('#name-input');
+    await page.keyboard.type('test');
+    await page.focus('#lastname-input');
+    await page.keyboard.type('test');
+    await page.focus('#email-input');
+    await page.keyboard.type(email);
+    await page.focus('#password-input');
+    await page.keyboard.type('test');
+    await page.focus('#repeat-password-input');
+    await page.keyboard.type('test');
+    await page.select("select#countries-select", "Albania")
+    await page.focus('#telephone-input');
+    await page.keyboard.type('678789098');
+    await page.focus('#postcode-input');
+    await page.keyboard.type('46762');
+    await page.click('#signup');
+    const text = await page.$eval('span#email-error', el => el.innerHTML);
+    expect(text).toEqual('User already exists');
+  } catch (err) {
+    console.error(err);
+  } finally {
+    await removeTestUser(email);
+  }
+
 });
 
 it('Displays countries select element', async () => {
@@ -122,8 +143,8 @@ it('Displays countries select element', async () => {
   expect(length).toEqual(1);
 })
 
-it.only('Has 194 countries on the list', async () => {
-  await page.waitFor('.country');
+it('Has 194 countries on the list', async () => {
+  await page.waitForSelector('.country');
   const length = await page.$$eval('.country', el => el.length);
   expect(length).toEqual(194);
 });

@@ -19,7 +19,7 @@ const Header = ({ history, active } : { history: any, active: string }) => {
     const addUserClasses = active === 'add-user' ? 'nav-item active' : 'nav-item';
 
     return (
-      <div className="navbar-collapse bg-secondary" id="navbarNav">
+      <div className="navbar-collapse bg-secondary" id="header">
         <ul className="navbar-nav">
           <li className={usersClasses}>
             <Link id="users" className="text-white" to="/users">Home</Link>

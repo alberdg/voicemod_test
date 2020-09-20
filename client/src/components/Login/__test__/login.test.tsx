@@ -110,7 +110,7 @@ it('Error message for invalid credentials', async () => {
   await page.waitForSelector('#signin-error');
 });
 
-it.only('User navigates to users page upon valid credentials provided', async () => {
+it('User navigates to users page upon valid credentials provided', async () => {
   await page.focus('#email-input');
   await page.keyboard.type('jonh.doe@test.com');
   await page.focus('#password-input');

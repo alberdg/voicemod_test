@@ -1,7 +1,6 @@
 import moxios from 'moxios';
 import { SERVER_URL } from '../../constants';
 import { fetchCountries } from '../countries';
-import { Country } from '../../interfaces/country';
 
 beforeEach(() => {
   moxios.install();
@@ -41,7 +40,8 @@ afterEach(() => {
 });
 
 it('Can fetch countries', async () => {
-  const countriesResponse: Country[] = await fetchCountries();
+  const countriesResponse: any = await fetchCountries();
   expect(countriesResponse).not.toBeNull();
-  expect(countriesResponse.length).toEqual(6);
+  expect(countriesResponse.data).not.toBeNull();
+  expect(countriesResponse.data.length).toEqual(6);
 });
