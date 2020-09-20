@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { SERVER_URL } from '../constants';
+import { User } from '../interfaces/user';
 
 /**
  * Service to fetch users
@@ -24,6 +25,22 @@ export const fetchUsers = async () : Promise<any> => {
 export const deleteUser = async (userId: string) : Promise<any> => {
   try {
     const response = await axios.delete(`${SERVER_URL}/api/users/${userId}`);
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+}
+
+
+/**
+ * Service to fetch a user by id
+ * @function
+ * @param user User id to be fetched
+ * @returns response Fetch user response
+ */
+export const fetchUserById = async (userId: string) : Promise<any> => {
+  try {
+    const response = await axios.get(`${SERVER_URL}/api/users/${userId}`);
     return response;
   } catch (err) {
     return err.response;

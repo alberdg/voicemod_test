@@ -66,7 +66,7 @@ const UserTable = (): JSX.Element => {
           </button>
         </td>
         <td>
-          <Link to={`/edit/${id}`} className="btn btn-primary">
+          <Link to={`/users/edit/${id}`} className="btn btn-primary">
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </td>
