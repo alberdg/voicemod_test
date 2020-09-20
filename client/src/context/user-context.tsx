@@ -11,6 +11,10 @@ export const UserContext = createContext({
   country: '',
   telephone: '',
   postcode: '',
+  successMessage: '',
+  errorMessage: '',
+  loading: false,
+  validForm: false,
   setName: (name: string) : void => {},
   setLastname: (lastname: string) : void => {},
   setEmail: (email: string) : void => {},
@@ -19,6 +23,10 @@ export const UserContext = createContext({
   setCountry: (country: string) : void => {},
   setTelephone: (telephone: string) : void => {},
   setPostcode: (postcode: string) : void => {},
+  setSuccessMessage: (successMessage: string) : void => {},
+  setErrorMessage: (errorMessage: string) : void => {},
+  setLoading: (loading: boolean) : void => {},
+  setValidForm: (validForm: boolean) : void => {}
 });
 
 /**
@@ -33,9 +41,13 @@ const UserContextProvider = ({ children }: { children: JSX.Element }) => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const [ repeatPassword, setRepeatPassword ] = useState<string>('');
-  const [ country, setCountry ] = useState<string>('');
+  const [ country, setCountry ] = useState<string>('-1');
   const [ telephone, setTelephone ] = useState<string>('');
   const [ postcode, setPostcode ] = useState<string>('');
+  const [ successMessage, setSuccessMessage ] = useState<string>('');
+  const [ errorMessage, setErrorMessage ] = useState<string>('');
+  const [ loading, setLoading ] = useState<boolean>(false);
+  const [ validForm, setValidForm ] = useState<boolean>(false);
 
   return (
     <UserContext.Provider value={{
@@ -47,6 +59,10 @@ const UserContextProvider = ({ children }: { children: JSX.Element }) => {
       country, setCountry,
       telephone, setTelephone,
       postcode, setPostcode,
+      successMessage, setSuccessMessage,
+      errorMessage, setErrorMessage,
+      loading, setLoading,
+      validForm, setValidForm
     }}>
       {children}
     </UserContext.Provider>
