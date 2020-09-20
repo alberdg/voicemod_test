@@ -13,14 +13,14 @@ beforeEach(async () => {
    * FIXME: Bear in mind we will have to perform login first
    * once authorization is needed for navigation
    */
-  await page.goto('localhost:3000/home');
-  await page.waitForSelector(HEADER);
+  await page.goto('localhost:3000/users');
+  await page.waitForSelector('#users-table');
 });
 
 
 it('Displays a title', async () => {
   const text = await page.$eval('#title', el => el.innerHTML);
-  expect(text).toEqual('Voicemode users administration panel');
+  expect(text).toEqual('Voicemod users administration panel');
 })
 
 it('Displays a header', async () => {
