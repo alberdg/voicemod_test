@@ -10,19 +10,22 @@ import Signup from './components/Signup/signup';
 import Home from './components/Home/home';
 import AddUser from './components/AddUser/add-user';
 import AppContext from './context/app-context';
+import UserContext from './context/user-context';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
     <AppContext>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/users" component={Home} />
-          <Route exact path="/users/add" component={AddUser} />
-        </Switch>
-      </BrowserRouter>
+      <UserContext>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/users" component={Home} />
+            <Route exact path="/users/add" component={AddUser} />
+          </Switch>
+        </BrowserRouter>
+      </UserContext>
     </AppContext>
   </React.StrictMode>,
   document.getElementById('root')
