@@ -1,20 +1,23 @@
 import moxios from 'moxios';
 import { SERVER_URL } from '../../constants';
-import { fetchUserById } from '../users';
+import { deleteUser, updateUser } from '../users';
+import { createUser, buildUserObject } from '../../test/utils';
+import { User } from '../../interfaces/user';
+
+let user: User;
+
+beforeAll(async (done: Function) => {
+  const email = `edit-user.${new Date().getTime()}@test.com`;
+  const userObject: User = buildUserObject(email);
+  user = await createUser(userObject);
+  done();
+});
 
 beforeEach(() => {
   moxios.install();
   moxios.stubRequest(`${SERVER_URL}/api/users/:id`, {
     status: 200,
-    response: {
-      id: '123456789012123456765431',
-      name: 'Jonh',
-      lastname: 'Doe',
-      country: '123456788765431234567123',
-      telephone: '+34678787654',
-      email: 'jonh.doe@test.com',
-      postcode: '46019'
-    }
+    response: user
   });
 });
 
@@ -22,15 +25,34 @@ afterEach(() => {
   moxios.uninstall();
 });
 
-it('Can fetch user by id', async () => {
-  const response = await fetchUserById('123456789012123456765431');
+afterAll(async () => await deleteUser(user.id));
+
+it('Updates the given user', async () => {
+  console.log('Test 1');
+  const editedName: string = `${user.lastname}_edited`;
+  const editedLastName: string = `${user.lastname}_edited`;
+  const editedEmail: string = `edited_${user.email}`;
+  const editedCountry: string = `123456543212345678909876`;
+  const editedTelephone: string = '546453567';
+  const editedPostcode: string = '25673';
+  console.log('Test updating user');
+  const response = await updateUser(
+    user.id,
+    editedName,
+    editedLastName,
+    editedEmail,
+    editedCountry,
+    editedTelephone,
+    editedPostcode
+  );
+  console.log('Test updating user asserting');
   expect(response).not.toBeNull();
   expect(response.data).not.toBeNull();
-  expect(response.data.id).toEqual('123456789012123456765431');
-  expect(response.data.name).toEqual('Jonh');
-  expect(response.data.lastname).toEqual('Doe');
-  expect(response.data.country).toEqual('123456788765431234567123');
-  expect(response.data.telephone).toEqual('+34678787654');
-  expect(response.data.email).toEqual('jonh.doe@test.com');
-  expect(response.data.postcode).toEqual('46019');
+  expect(response.data.id).toEqual(user.id);
+  expect(response.data.name).toEqual(editedName);
+  expect(response.data.lastname).toEqual(editedLastName);
+  expect(response.data.country).toEqual(editedCountry);
+  expect(response.data.telephone).toEqual(editedTelephone);
+  expect(response.data.email).toEqual(editedEmail);
+  expect(response.data.postcode).toEqual(editedPostcode);
 });

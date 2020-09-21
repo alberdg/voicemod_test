@@ -1,7 +1,7 @@
-import React, {  useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { isValidPassword } from '../../utils/utils';
 import { renderInputField, renderSpinner, renderHelperMessage } from '../Common';
-import { UserContext } from '../../context/user-context';
+import { PasswordContext } from '../../context/password-context';
 
 /**
  * Edit User password form component
@@ -12,13 +12,13 @@ import { UserContext } from '../../context/user-context';
 const EditUserPasswordForm = ({ performAction } :
   { performAction: Function }): JSX.Element => {
   const {
-    password, setPassword, repeatPassword, setRepeatPassword, loading
-  } = useContext(UserContext);
-  const [ errorMessage, setErrorMessage ] = useState<string>('');
-  const [ successMessage, setSuccessMessage ] = useState<string>('');
+    password, setPassword, repeatPassword, setRepeatPassword,
+    loading, passwordErrorMessage, passwordSuccessMessage,
+  } = useContext(PasswordContext);
   const validPassword = isValidPassword(password);
 
-  /**
+
+/**
    * Validates the form
    * @function
    * @returns flag Flag indicating if the form is valid
@@ -36,7 +36,7 @@ const EditUserPasswordForm = ({ performAction } :
   const renderTitle = (): JSX.Element => {
     return (
       <div className="row mt-3">
-        <h1 id="title" className="mx-auto">Voicemod edit user password</h1>
+        <h1 id="edit-password-title" className="mx-auto">Voicemod edit user password</h1>
       </div>
     )
   }
@@ -47,13 +47,18 @@ const EditUserPasswordForm = ({ performAction } :
    * @returns password password element
    */
   const renderPassword = (): JSX.Element => {
+    const display: boolean = !validPassword && !password?.isEmpty();
     return renderInputField('password-input',
     'form-control',
     'Password',
     password,
     setPassword,
     'password',
-    !isValidPassword);
+    display,
+    'password-error',
+    'alert alert-danger',
+    'error',
+    'Password must have between 4 and 20 characters');
   }
 
   /**
@@ -68,7 +73,11 @@ const EditUserPasswordForm = ({ performAction } :
     repeatPassword,
     setRepeatPassword,
     'password',
-    password !== repeatPassword
+    !repeatPassword?.isEmpty() && password !== repeatPassword,
+    'password-error',
+    'alert alert-danger',
+    'error',
+    'Password don\'t match'
     );
   }
 
@@ -85,9 +94,7 @@ const EditUserPasswordForm = ({ performAction } :
           id='edit-password-btn'
           className="btn btn-primary"
           disabled={disabled}
-          onClick={(event: any) => performAction(event,
-            setErrorMessage,
-            setSuccessMessage)}
+          onClick={(event: any) => performAction(event)}
         >
           Save
         </button>
@@ -104,11 +111,11 @@ const EditUserPasswordForm = ({ performAction } :
   const renderError = (): JSX.Element => {
     return (
         renderHelperMessage(
-         !errorMessage.isEmpty(),
+         !passwordErrorMessage.isEmpty(),
          'edit-password-error',
          "alert alert-danger",
          'error',
-         errorMessage
+         passwordErrorMessage
        )
     );
   }
@@ -121,11 +128,11 @@ const EditUserPasswordForm = ({ performAction } :
   const renderSuccess = (): JSX.Element => {
     return (
         renderHelperMessage(
-         !successMessage.isEmpty(),
+         !passwordSuccessMessage.isEmpty(),
          'edit-password-success',
          "alert alert-success",
          'success',
-         successMessage
+         passwordSuccessMessage
        )
     );
   }

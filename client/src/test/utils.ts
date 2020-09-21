@@ -13,7 +13,7 @@ import { User } from '../interfaces/user';
 export const createUser = async (user: User) : Promise<User> => {
   const response = await signup(user.name, user.lastname, user.email,
     user.password!, user.telephone, user.country, user.postcode);
-  return (response && response.status === 200) ? response.data : null;
+  return (response && response.status === 201) ? response.data : null;
 }
 
 /**

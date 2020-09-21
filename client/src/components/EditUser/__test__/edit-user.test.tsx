@@ -7,7 +7,7 @@ let browser: Browser, page: Page, userEmail: string, user: User;
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
-    headless: false
+    headless: true
   });
   page = await browser.newPage();
   userEmail = `edituser.${new Date().getTime()}@test.com`;
@@ -31,14 +31,14 @@ it('Has an input field for user name with user first name', async () => {
   const length = await page.$$eval('#name-input', el => el.length);
   expect(length).toEqual(1);
   const value = await getInputTextValue(page, '#name-input');
-  expect(value).toEqual('Jonh');
+  expect(value).toEqual('test name');
 });
 
 it('Has an input field for last name with user last name', async () => {
   const length = await page.$$eval('#lastname-input', el => el.length);
   expect(length).toEqual(1);
   const value = await getInputTextValue(page, '#lastname-input');
-  expect(value).toEqual('Doe');
+  expect(value).toEqual('test lastname');
 });
 
 it('Has an input field for user email', async () => {
@@ -52,14 +52,14 @@ it('Has an input field for user telephone', async () => {
   const length = await page.$$eval('#telephone-input', el => el.length);
   expect(length).toEqual(1);
   const value = await getInputTextValue(page, '#telephone-input');
-  expect(value).toEqual('678789082');
+  expect(value).toEqual('687787654');
 });
 
 it('Has an input field for user postcode', async () => {
   const length = await page.$$eval('#postcode-input', el => el.length);
   expect(length).toEqual(1);
   const value = await getInputTextValue(page, '#postcode-input');
-  expect(value).toEqual('46578');
+  expect(value).toEqual('46787');
 });
 
 it('Has a edit user button', async () => {
@@ -74,21 +74,9 @@ it('Error message displayed if account exists', async () => {
     let secondUser: User = buildUserObject(secondUserEmail);
     secondUser = await createUser(secondUser);
 
-    await page.focus('#name-input');
-    await page.keyboard.type('test');
-    await page.focus('#lastname-input');
-    await page.keyboard.type('test');
-    await page.focus('#email-input');
+    await page.focus("#email-input")
+    await page.$eval("#email-input", (el: any) => el.setSelectionRange(0, el.value.length))
     await page.keyboard.type(secondUserEmail);
-    await page.focus('#password-input');
-    await page.keyboard.type('test');
-    await page.focus('#repeat-password-input');
-    await page.keyboard.type('test');
-    await page.select("select#countries-select", "Albania")
-    await page.focus('#telephone-input');
-    await page.keyboard.type('test');
-    await page.focus('#postcode-input');
-    await page.keyboard.type('test');
     await page.click('#edit');
 
     await page.waitForSelector('#edit-error');
@@ -101,7 +89,7 @@ it('Error message displayed if account exists', async () => {
   }
 });
 
-it.only('Edit button is disabled if require fields are not provided', async () => {
+it('Edit button is disabled if require fields are not provided', async () => {
   await page.focus("#name-input")
   await page.$eval("#name-input", (el: any) => el.setSelectionRange(0, el.value.length))
   await page.keyboard.press('Backspace')
@@ -131,14 +119,17 @@ it('Error message is provided if password length is above 20 characters', async 
   expect(text).toEqual('Password must have between 4 and 20 characters');
 });
 
-it('Error message if email exists', async () => {
+it.only('Error message if email exists', async () => {
   // User does not exist add it for the very first time
   const email: string = `edituser.${new Date().getTime()}@test.com`;
   try {
     let secondUser: User = buildUserObject(email);
     secondUser = await createUser(secondUser);
 
-    await page.waitForSelector('span#edit-success');
+    await page.focus("#email-input")
+    await page.$eval("#email-input", (el: any) => el.setSelectionRange(0, el.value.length))
+    await page.keyboard.type(email);
+
 
     await page.waitForSelector('span#edit-error');
     const text = await page.$eval('span#edit-error', el => el.innerHTML);
@@ -178,10 +169,6 @@ it('Does not clean up all fields after successfully adding a new user', async ()
   expect(value).toEqual(user.lastname);
   value = await getInputTextValue(page, '#email-input');
   expect(value).toEqual(user.email);
-  value = await getInputTextValue(page, '#password-input');
-  expect(value).toEqual(user.password);
-  value = await getInputTextValue(page, '#repeat-password-input');
-  expect(value).toEqual(user.password);
   value = await getInputTextValue(page, '#telephone-input');
   expect(value).toEqual(user.telephone);
   value = await getInputTextValue(page, '#postcode-input');

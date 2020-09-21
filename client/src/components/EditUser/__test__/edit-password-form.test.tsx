@@ -7,7 +7,7 @@ let browser: Browser, page: Page, userEmail: string, user: User;
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
-    headless: false
+    headless: true
   });
   page = await browser.newPage();
   userEmail = `edituser.${new Date().getTime()}@test.com`;
@@ -19,7 +19,7 @@ beforeEach(async () => {
 
 
 it('Has voicemod edit user password title', async () => {
-  const text = await page.$eval('#title', el => el.innerHTML);
+  const text = await page.$eval('#edit-password-title', el => el.innerHTML);
   expect(text).toEqual('Voicemod edit user password');
 });
 
@@ -29,7 +29,7 @@ it('Has a save user button', async () => {
   expect(length).toEqual(1);
 });
 
-it.only('Edit button is disabled if require fields are not provided', async () => {
+it('Edit button is disabled if require fields are not provided', async () => {
   const isDisabled = (await page.$$('button[disabled]#edit-password-btn')).length !== 0;
   expect(isDisabled).toBeTruthy();
 });
@@ -52,13 +52,13 @@ it('Error message is provided if password length is above 20 characters', async 
 it('Displays success message upon user password edited', async () => {
     await page.focus('#password-input');
     await page.keyboard.type('test password edited');
-    await page.focus('#repeat password-input');
+    await page.focus('#repeat-password-input');
     await page.keyboard.type('test password edited');
     await page.click('#edit-password-btn');
 
     await page.waitForSelector('#edit-password-success');
     const text = await page.$eval('#edit-password-success', el => el.innerHTML);
-    expect(text).toEqual('User password successfully edited');
+    expect(text).toEqual('Password successfully edited');
 });
 
 it('Cleans up all password fields after successfully editing password', async () => {

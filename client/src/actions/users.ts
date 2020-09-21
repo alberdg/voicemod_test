@@ -46,3 +46,41 @@ export const fetchUserById = async (userId: string) : Promise<any> => {
     return err.response;
   }
 }
+
+/**
+ * Service to update the given user id
+ * @function
+ * @param userId User id to be updated
+ * @param name User name
+ * @param lastname User last name
+ * @param email User email
+ * @param country User country
+ * @param telephone User telephone
+ * @param postcode User postcode
+ * @returns response Update user response
+ */
+export const updateUser = async (userId: string, name: string, lastname: string,
+  email: string, country: string, telephone: string, postcode: string): Promise<any> => {
+    try {
+      const response = await axios.put(`${SERVER_URL}/api/users/${userId}`,
+        { name, lastname, email, country, telephone, postcode });
+      return response;
+    } catch (err) {
+      return err.response;
+    }
+}
+
+/**
+ * Service to update user password
+ * @function
+ * @returns response Update password response
+ */
+export const updatePassword = async (userId: string, password: string) : Promise<any> => {
+  try {
+    const response = await axios.put(`${SERVER_URL}/api/users/${userId}/password`,
+      { password });
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+}

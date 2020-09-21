@@ -4,7 +4,8 @@ import Header from '../Common/header';
 import EditUserForm from './edit-form';
 import EditUserPasswordForm from './edit-password-form';
 import { UserContext } from '../../context/user-context';
-import { signup } from '../../actions/signup';
+import { PasswordContext } from '../../context/password-context';
+import { updateUser, updatePassword } from '../../actions/users';
 import { User } from '../../interfaces/user';
 import { renderHelperMessage } from '../Common/';
 import { fetchUserById } from '../../actions/users';
@@ -18,9 +19,11 @@ import { fetchUserById } from '../../actions/users';
 const EditUser = ({ history } : { history : any }) => {
   const { id } = useParams();
   const { validForm, setSuccessMessage, setErrorMessage,
-    setLoading, name, lastname, email, password, country, telephone,
-    postcode, setName, setLastname, setEmail, setPassword, setCountry,
+    setLoading, name, lastname, email, country, telephone,
+    postcode, setName, setLastname, setEmail, setCountry,
     setTelephone, setPostcode, setValidForm } = useContext(UserContext);
+  const { password, setPassword, setRepeatPassword,
+    setPasswordErrorMessage, setPasswordSuccessMessage } = useContext(PasswordContext);
   const [ fetchError, setFetchError ] = useState<string>('');
 
   useEffect(() => {
@@ -49,6 +52,8 @@ const EditUser = ({ history } : { history : any }) => {
     setSuccessMessage('');
     setValidForm(false);
     setLoading(true);
+    setPasswordErrorMessage('');
+    setPasswordSuccessMessage('');
   }
 
   /**
@@ -63,6 +68,7 @@ const EditUser = ({ history } : { history : any }) => {
     setLastname(lastname);
     setEmail(email);
     setPassword('');
+    setRepeatPassword('');
     setCountry(country);
     setTelephone(telephone);
     setPostcode(postcode);
@@ -97,9 +103,9 @@ const EditUser = ({ history } : { history : any }) => {
 
     if (validForm) {
       setLoading(true);
-      const response = await signup(name, lastname, email, password, telephone,
-        country, postcode);
-      if (response && response.status === 201) {
+      const response = await updateUser(id, name, lastname, email, country,
+        telephone, postcode);
+      if (response && response.status === 200) {
         setSuccessMessage('User successfully edited');
       } else if (response && response.status === 400) {
         setErrorMessage('User email already exists');
@@ -117,15 +123,32 @@ const EditUser = ({ history } : { history : any }) => {
    * @param setPasswordErrorMessage Password error message
    * @param setPasswordSuccessMessage Password success message
    */
-  const editUserPassword = async (event: MouseEvent, setPasswordErrorMessage: Function,
-    setPasswordSuccessMessage: Function): Promise<void> => {
+  const editUserPassword = async (event: MouseEvent): Promise<void> => {
     if (!id) {
       return null as any;
     }
     event.preventDefault();
     setPasswordErrorMessage('');
     setPasswordSuccessMessage('');
+    setLoading(true);
+    const response = await updatePassword(id, password);
+    if (response && response.status === 200) {
+      setPasswordSuccessMessage('Password successfully edited');
+      resetEditUserPasswordForm();
+    } else {
+      setPasswordErrorMessage('Error while editing the user');
+    }
+    setLoading(false);
 
+  }
+
+  /**
+   * Clears up password fields
+   * @function
+   */
+  const resetEditUserPasswordForm = (): void => {
+    setPassword('');
+    setRepeatPassword('');
   }
 
   /**
@@ -158,10 +181,8 @@ const EditUser = ({ history } : { history : any }) => {
     return (
       <EditUserPasswordForm
         performAction={(
-          event: MouseEvent, 
-          setPasswordErrorMessage: Function,
-          setPasswordSuccessMessage: Function,
-        ) => editUserPassword(event, setPasswordErrorMessage, setPasswordSuccessMessage)}
+          event: MouseEvent
+        ) => editUserPassword(event)}
       />
     );
   }
