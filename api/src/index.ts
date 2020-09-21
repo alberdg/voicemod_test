@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { cacheCountries } from './routes/country';
 const HTTP_PORT = 3001;
 
 /**
@@ -27,6 +28,8 @@ const start = async () => {
     console.error(err);
   }
 
+  // Cache countries in memory
+  await cacheCountries();
   app.listen(HTTP_PORT, () => {
     console.log(`Listening on port ${HTTP_PORT}`);
   });
