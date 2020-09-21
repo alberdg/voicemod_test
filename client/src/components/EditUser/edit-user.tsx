@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Header from '../Common/header';
-import UserForm from '../Common/user-form';
+import EditUserForm from './edit-form';
+import EditUserPasswordForm from './edit-password-form';
 import { UserContext } from '../../context/user-context';
 import { signup } from '../../actions/signup';
 import { User } from '../../interfaces/user';
@@ -34,6 +35,7 @@ const EditUser = ({ history } : { history : any }) => {
       } else {
         setFetchError('Error loading user');
       }
+      setLoading(false);
     }
     fetchData();
   }, [id]);
@@ -55,12 +57,12 @@ const EditUser = ({ history } : { history : any }) => {
    * @param user User object
    */
   const initializeUser = (user: User) : void => {
-    const { name, lastname, email, password, country, telephone,
+    const { name, lastname, email, country, telephone,
       postcode } = user;
     setName(name);
     setLastname(lastname);
     setEmail(email);
-    setPassword(password!);
+    setPassword('');
     setCountry(country);
     setTelephone(telephone);
     setPostcode(postcode);
@@ -79,14 +81,15 @@ const EditUser = ({ history } : { history : any }) => {
     )
   }
 
+
   /**
    * Edits the current user
    * @function
    * @param event Form submitted event
    */
-  const editUser = async (event: MouseEvent) => {
+  const editUser = async (event: MouseEvent): Promise<void> => {
     if (!id) {
-      return null;
+      return null as any;
     }
     event.preventDefault();
     setErrorMessage('');
@@ -108,6 +111,24 @@ const EditUser = ({ history } : { history : any }) => {
   }
 
   /**
+   * Edits the current user password
+   * @function
+   * @param event Form submitted event
+   * @param setPasswordErrorMessage Password error message
+   * @param setPasswordSuccessMessage Password success message
+   */
+  const editUserPassword = async (event: MouseEvent, setPasswordErrorMessage: Function,
+    setPasswordSuccessMessage: Function): Promise<void> => {
+    if (!id) {
+      return null as any;
+    }
+    event.preventDefault();
+    setPasswordErrorMessage('');
+    setPasswordSuccessMessage('');
+
+  }
+
+  /**
    * Renders edit user form
    * @function
    * @returns userForm Edit user form
@@ -117,11 +138,31 @@ const EditUser = ({ history } : { history : any }) => {
       return null as any;
     }
     return (
-      <UserForm
+      <EditUserForm
         actionId="edit"
         actionTitle="Edit user"
         performAction={(event: MouseEvent) => editUser(event)}
-        />
+      />
+    );
+  }
+
+  /**
+   * Renders edit user password form
+   * @function
+   * @returns userPasswordForm Edit user password form
+   */
+  const renderUserPasswordForm = (): JSX.Element => {
+    if (!fetchError.isEmpty()) {
+      return null as any;
+    }
+    return (
+      <EditUserPasswordForm
+        performAction={(
+          event: MouseEvent, 
+          setPasswordErrorMessage: Function,
+          setPasswordSuccessMessage: Function,
+        ) => editUserPassword(event, setPasswordErrorMessage, setPasswordSuccessMessage)}
+      />
     );
   }
 
@@ -167,13 +208,30 @@ const EditUser = ({ history } : { history : any }) => {
     );
   }
 
+  /**
+   * Renders edit user data form
+   * @function
+   * @returns editUserData Edit user data form element
+   */
+  const renderEditUserData = (): JSX.Element =>  {
+    return (
+      <div className="card">
+        <div className="card-body">
+          {renderTitle()}
+          {renderUserForm()}
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <>
       <Header history={history} active="edit-user"/>
       <div className="row">
         <div className="col-sm-12 text-center page-container" id="edit-user">
-          {renderTitle()}
-          {renderUserForm()}
+          {renderEditUserData()}
+          {renderUserPasswordForm()}
           {renderFetchError()}
         </div>
       </div>

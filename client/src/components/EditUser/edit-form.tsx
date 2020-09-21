@@ -1,35 +1,31 @@
 import React, {  useEffect, useContext } from 'react';
-import { isValidEmail, isValidPassword } from '../../utils/utils';
-import { renderInputField, renderSpinner, renderHelperMessage } from './';
+import { isValidEmail } from '../../utils/utils';
+import { renderInputField, renderSpinner, renderHelperMessage } from '../Common';
 import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
 import { AppContext } from '../../context/app-context';
 import { UserContext } from '../../context/user-context';
 
 /**
- * User form component
+ * Edit User form component
  * @function
- * @param history History object
  * @param actionId Action button id
  * @param performAction Action to be performed
  * @param actionTitle Action button title
  * @returns singup Signup element
  */
-const UserForm = ({ actionId, performAction, actionTitle } :
+const EditUserForm = ({ actionId, performAction, actionTitle } :
   { actionId: string, performAction: Function, actionTitle: string }): JSX.Element => {
   const { countries, setCountries} = useContext(AppContext);
   const {
-    name, setName, lastname, setLastname, email, setEmail, password, setPassword,
-    repeatPassword, setRepeatPassword, country, setCountry, telephone, setTelephone,
-    postcode, setPostcode, errorMessage, successMessage, loading, setLoading,
-    validForm, setValidForm
+    name, setName, lastname, setLastname, email, setEmail, country, setCountry,
+    telephone, setTelephone, postcode, setPostcode, errorMessage, successMessage,
+    loading, setLoading, validForm, setValidForm
   } = useContext(UserContext);
 
   const validEmail = isValidEmail(email);
-  const validPassword = isValidPassword(password);
 
   useEffect(() => {
-    resetForm();
     if (!Array.isArray(countries) || countries.length === 0) {
       const fetchData = async () => {
         const response = await fetchCountries();
@@ -41,21 +37,6 @@ const UserForm = ({ actionId, performAction, actionTitle } :
       fetchData();
     }
   }, []);
-
-  /**
-   * Resets the form
-   * @function
-   */
-  const resetForm = () => {
-    setName('');
-    setLastname('');
-    setEmail('');
-    setPassword('');
-    setRepeatPassword('');
-    setTelephone('');
-    setPostcode('');
-    setCountry('');
-  }
 
   /**
    * onChange handler for country
@@ -76,8 +57,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
    */
   const isValidForm = () => {
     return !name.isEmpty() && !lastname.isEmpty() && validEmail &&
-      validPassword && repeatPassword === password && !telephone.isEmpty() &&
-      !postcode.isEmpty() && country !== '-1';
+      !telephone.isEmpty() && !postcode.isEmpty() && country !== '-1';
   }
 
   /**
@@ -130,45 +110,6 @@ const UserForm = ({ actionId, performAction, actionTitle } :
     'Invalid email address format');
   }
 
-  /**
-   * Renders password element
-   * @function
-   * @returns password Password element
-   */
-  const renderPassword = (): JSX.Element => {
-    const display: boolean = !validPassword && !password?.isEmpty();
-    return renderInputField('password-input',
-    'form-control',
-    'Password',
-    password,
-    setPassword,
-    'password',
-    display,
-    'password-error',
-    'alert alert-danger',
-    'error',
-    'Password must have between 4 and 20 characters');
-  }
-
-  /**
-   * Renders repeat password element
-   * @function
-   * @returns repeatPassword Repeat password element
-   */
-  const renderRepeatPassword = (): JSX.Element => {
-    const display: boolean = validPassword && password !== repeatPassword;
-    return renderInputField('repeat-password-input',
-    'form-control',
-    'Repeat your password',
-    repeatPassword,
-    setRepeatPassword,
-    'password',
-    display,
-    'repeat-password-error',
-    'alert alert-danger',
-    'error',
-    'Passwords don\'t match');
-  }
 
   /**
    * Renders telephone element
@@ -214,7 +155,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
           id={actionId}
           className="btn btn-primary"
           disabled={disabled}
-          onClick={(event: any) => performAction(event, resetForm)}
+          onClick={(event: any) => performAction(event)}
         >
           {actionTitle}
         </button>
@@ -259,7 +200,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
     return (
         renderHelperMessage(
          !errorMessage.isEmpty(),
-         'signup-error',
+         'edit-error',
          "alert alert-danger",
          'error',
          errorMessage
@@ -276,7 +217,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
     return (
         renderHelperMessage(
          !successMessage.isEmpty(),
-         'signup-success',
+         'edit-success',
          "alert alert-success",
          'success',
          successMessage
@@ -294,12 +235,10 @@ const UserForm = ({ actionId, performAction, actionTitle } :
     // Store if the form is valid in user context
     setValidForm(isValidForm());
     return (
-      <form noValidate className="mt-3">
+      <form id="edit-user-form" noValidate className="mt-3">
         {renderName()}
         {renderLastname()}
         {renderEmail()}
-        {renderPassword()}
-        {renderRepeatPassword()}
         {renderTelephone()}
         {renderCountries()}
         {renderPostcode()}
@@ -320,4 +259,4 @@ const UserForm = ({ actionId, performAction, actionTitle } :
 
 
 }
-export default UserForm;
+export default EditUserForm;
