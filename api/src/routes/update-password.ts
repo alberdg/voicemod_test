@@ -5,11 +5,12 @@ import 'express-async-errors';
 import { validateRequest } from '../middlewares/validate-request';
 import { BadRequestError } from '../errors/bad-request-error';
 import { User } from '../models/user';
+import { Password } from '../services/password';
 const router = Router();
 
 
 router.put(
-  '/api/users/:id',
+  '/api/users/:id/password',
   [
     param('id')
       .notEmpty()
@@ -18,6 +19,7 @@ router.put(
       .trim()
       .isLength({ min: 4, max: 20 })
       .withMessage('Password must be between 4 and 20 characters'),
+
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -30,9 +32,13 @@ router.put(
     if (!existingUser) {
       throw new BadRequestError('Invalid user');
     }
-    await User.updateOne({ _id: id }, { $set: { password } });
+
+    //Have to hash password here since isModified in pre save won't work
+    const hashedPassword: string = await Password.toHash(password);
+    await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
     const user: any = await User.findById({ _id: id });
+    console.log('user updated', user);
     // Generate JWT
     const userJwt = jwt.sign(
       {

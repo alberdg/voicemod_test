@@ -13,7 +13,6 @@ it('Can fetch a user by id', async () => {
     .get(`/api/users/${user.id}`)
     .send()
     .expect(200);
-
   expect(response).not.toBeNull();
   expect(response.body).not.toBeNull();
   expect(response.body.name).toEqual(userA.name);

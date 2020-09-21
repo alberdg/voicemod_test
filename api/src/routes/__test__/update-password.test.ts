@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { UserAttrs, User } from '../../models/user';
-import { Password } from '../../services/password';
 import { buildUserObject } from '../../test/setup';
 import { performSignup } from '../../test/utils';
 
@@ -10,18 +9,21 @@ it('returns a 200 on successful password update', async () => {
   const response = await performSignup(user);
 
   const password: string = `password_modified`;
-
   const updated = await request(app)
     .put(`/api/users/${response.body.id}/password`)
     .send({ password })
     .expect(200);
+  console.log(updated.body);
   expect(updated.body).not.toBeNull();
-  const passwordHashed: string = await Password.toHash(password);
-  const updatedCount: number = await User.findOne({
-    _id: response.body.id,
-    password: passwordHashed
-  }).countDocuments();
-  expect(updatedCount).toEqual(1);
+  expect(updated.body.id).toEqual(response.body.id);
+
+  await request(app)
+    .post('/api/users/signin')
+    .send({
+      email: user.email,
+      password
+    })
+    .expect(200);
 });
 
 it('returns a 400 with an empty password', async () => {
