@@ -17,8 +17,9 @@ import { MAX_USER_RECORDS } from '../../constants';
 const UserTable = (): JSX.Element => {
   const [ users, setUsers ] = useState<User>([] as any);
   const [ loading, setLoading ] = useState<boolean>(true);
-  const [ pageCount, setPageCount ] = useState(10);
-  const [ currentPage, setCurrentPage ] = useState(1);
+  const [ usersCount, setUsersCount ] = useState<number>(0);
+  const [ pageCount, setPageCount ] = useState<number>(10);
+  const [ currentPage, setCurrentPage ] = useState(0);
   useEffect(() => {
     fetchData(currentPage);
   }, [currentPage]);
@@ -30,7 +31,12 @@ const UserTable = (): JSX.Element => {
   const fetchData = async (page: number) => {
     const response = await fetchUsers(page, MAX_USER_RECORDS);
     if (response && response.status === 200) {
-      setUsers(response.data);
+      setUsers(response.data?.users || []);
+      const usersCount: number = response.data?.usersCount || 0;
+      setUsersCount(usersCount);
+      const pageCount: number = usersCount ? Math.ceil(usersCount / MAX_USER_RECORDS) : 0;
+      console.log('Total pages', pageCount);
+      setPageCount(pageCount);
     } else {
       console.log(response.data, response.status);
     }
@@ -61,6 +67,9 @@ const UserTable = (): JSX.Element => {
    * @returns pagination Pagination element
    */
   const renderPagination = (): JSX.Element => {
+    if (!usersCount) {
+      return null as any;
+    }
     return (
       <div className="table-responsive mt-1">
         <ReactPaginate
@@ -106,7 +115,7 @@ const UserTable = (): JSX.Element => {
           </button>
         </td>
         <td>
-          <Link to={`/edit/${id}`} className="btn btn-primary">
+          <Link to={`/users/${id}`} className="btn btn-primary">
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </td>

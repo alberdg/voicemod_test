@@ -2,6 +2,9 @@
   height: 50px;
 }
 
+.navbar-toggler {
+  background-color: #00C1FF;
+}
 #sign-out {
   position: absolute;
   right: 10%;
