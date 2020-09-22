@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'
+import './user-table.css';
 import { renderSpinner } from './';
 import { User } from '../../interfaces/user';
 import { fetchUsers, deleteUser } from '../../actions/users';
@@ -13,7 +15,7 @@ import { fetchUsers, deleteUser } from '../../actions/users';
 const UserTable = (): JSX.Element => {
   const [ users, setUsers ] = useState<User>([] as any);
   const [ loading, setLoading ] = useState<boolean>(true);
-
+  const [ pageCount, setPageCount ] = useState(10);
   useEffect(() => {
     fetchData();
   }, []);
@@ -51,6 +53,41 @@ const UserTable = (): JSX.Element => {
   }
 
   /**
+   * Renders pagination for users table
+   * @function
+   * @returns pagination Pagination element
+   */
+  const renderPagination = (): JSX.Element => {
+    return (
+      <div className="table-responsive mt-1">
+        <ReactPaginate
+            previousLabel={'previous'}
+            nextLabel={'next'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={pageCount}
+            pageClassName="pagination-page"
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName={'pagination'}
+            activeClassName={'pagination-active'}
+          />
+      </div>
+    )
+  }
+
+  /**
+   * Handles page change
+   * @function
+   * @param selected Selected page
+   * @returns pagination Pagination element
+   */
+  const handlePageChange = ({ selected } : { selected: number}) => {
+    console.log(`handlePageChange`, selected);
+  }
+
+  /**
    * Renders a single user row
    * @function
    * @param user User item
@@ -66,7 +103,7 @@ const UserTable = (): JSX.Element => {
           </button>
         </td>
         <td>
-          <Link to={`/users/${id}`} className="btn btn-primary">
+          <Link to={`/edit/${id}`} className="btn btn-primary">
             <FontAwesomeIcon icon={faEdit} />
           </Link>
         </td>
@@ -126,6 +163,7 @@ const UserTable = (): JSX.Element => {
     <>
       {renderSpinner(loading)};
       {renderUserTable()}
+      {renderPagination()}
     </>
   )
 }
