@@ -11,8 +11,10 @@ it('returns a 200 on successful update', async () => {
   const response = await performSignup(user);
   user.name = `${user.name}_updated`;
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   const updated = await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(200);
   expect(updated.body).not.toBeNull();
@@ -24,8 +26,10 @@ it('successfully update the user in the database', async () => {
   const response = await performSignup(user);
   user.name = `${user.name}_updated`;
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(200);
   const updatedUser = await User.findOne({ _id: response.body.id });
@@ -40,8 +44,10 @@ it('returns a 400 with an invalid name', async () => {
   const response = await performSignup(user);
   user.name = '';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -51,8 +57,10 @@ it('returns a 400 with an invalid last name', async () => {
   const response = await performSignup(user);
   user.lastname = '';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -62,8 +70,10 @@ it('returns a 400 with an invalid email', async () => {
   const response = await performSignup(user);
   user.email = '';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -75,8 +85,10 @@ it('returns a 400 with an invalid country', async () => {
   const fakeCountryId = 'fakeId';
   user.country = fakeCountryId;
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -86,8 +98,10 @@ it('returns a 400 with an invalid telephone', async () => {
   const response = await performSignup(user);
   user.telephone = '';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -97,8 +111,10 @@ it('returns a 400 with an invalid postcode', async () => {
   const response = await performSignup(user);
   user.postcode = '';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -111,8 +127,10 @@ it('disallows duplicate emails', async () => {
   await performSignup(userB);
   user.email = 'anotheremail@test.com';
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(400);
 });
@@ -122,8 +140,10 @@ it('sets a cookie after successful update', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
   user.newpassword = 'newpassword';
+  const cookie: string[] = global.signin();
   const updateResponse = await request(app)
     .put(`/api/users/${response.body.id}`)
+    .set('Cookie', cookie)
     .send(user)
     .expect(200);
 

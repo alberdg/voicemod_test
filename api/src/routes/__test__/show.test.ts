@@ -9,8 +9,10 @@ it('Can fetch a user by id', async () => {
 
   const signupResponse = await performSignup(userA);
   const user: UserDoc = signupResponse.body;
+  const cookie: string[] = global.signin();
   const response = await request(app)
     .get(`/api/users/${user.id}`)
+    .set('Cookie', cookie)
     .send()
     .expect(200);
   expect(response).not.toBeNull();

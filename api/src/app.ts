@@ -3,6 +3,7 @@ import { json } from 'body-parser';
 import helmet from 'helmet';
 import cookieSession from 'cookie-session';
 import { errorHandler } from './middlewares/error-handler';
+import { currentUser } from './middlewares/current-user';
 import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
@@ -12,6 +13,7 @@ import { usersRouter } from './routes/users';
 import { showRouter } from './routes/show';
 import { updatePasswordRouter } from './routes/update-password';
 import { NotFoundError } from './errors/not-found-error';
+
 
 const allowedOrigins = [ 'http://localhost:3000', 'http://localhost' ];
 
@@ -30,6 +32,7 @@ const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
   }
   next();
 }
@@ -42,16 +45,18 @@ app.use(setCorsHeaders);
 app.use(
   cookieSession({
     signed: false,
-    secure: process.env.NODE_ENV !== 'test'
+    secure: false,
+    path: '/'
   })
 );
 
+app.use(currentUser);
 app.use(countryRouter);
-app.use(signupRouter);
-app.use(signinRouter);
 app.use(updateRouter);
 app.use(deleteRouter);
 app.use(usersRouter);
+app.use(signupRouter);
+app.use(signinRouter);
 app.use(showRouter);
 app.use(updatePasswordRouter);
 

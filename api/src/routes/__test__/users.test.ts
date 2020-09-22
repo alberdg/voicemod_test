@@ -16,15 +16,17 @@ it('Can fetch users', async () => {
   await performSignup(userB);
   await performSignup(userC);
   await performSignup(userD);
+  const cookie: string[] = global.signin();
   const response = await request(app)
     .post('/api/users')
-    .send({ page: 0, limit: 2})
+    .set('Cookie', cookie)
+    .send({ page: 0, limit: 3 })
     .expect(200);
 
   expect(response).not.toBeNull();
   expect(response.body).not.toBeNull();
-  expect(response.body.users?.length).toEqual(2);
-  expect(response.body.users[0]?.email).toEqual(userA.email);
-  expect(response.body.users[1]?.email).toEqual(userB.email);
+  expect(response.body.users?.length).toEqual(3);
+  expect(response.body.users[1]?.email).toEqual(userA.email);
+  expect(response.body.users[2]?.email).toEqual(userB.email);
 
 });

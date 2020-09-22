@@ -3,6 +3,7 @@ import { body, param } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import 'express-async-errors';
 import { validateRequest } from '../middlewares/validate-request';
+import { requireAuth } from '../middlewares/require-auth';
 import { BadRequestError } from '../errors/bad-request-error';
 import { User } from '../models/user';
 import { Password } from '../services/password';
@@ -11,6 +12,7 @@ const router = Router();
 
 router.put(
   '/api/users/:id/password',
+  requireAuth,
   [
     param('id')
       .notEmpty()
@@ -38,7 +40,7 @@ router.put(
     await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
     const user: any = await User.findById({ _id: id });
-    console.log('user updated', user);
+
     // Generate JWT
     const userJwt = jwt.sign(
       {

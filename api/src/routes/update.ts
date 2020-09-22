@@ -3,12 +3,14 @@ import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import 'express-async-errors';
 import { validateRequest } from '../middlewares/validate-request';
+import { requireAuth } from '../middlewares/require-auth';
 import { BadRequestError } from '../errors/bad-request-error';
 import { User } from '../models/user';
 const router = Router();
 
 router.put(
   '/api/users/:id',
+  requireAuth,
   [
     body('name')
       .trim()

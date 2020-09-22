@@ -9,11 +9,13 @@ it('returns a 200 on successful password update', async () => {
   const response = await performSignup(user);
 
   const password: string = `password_modified`;
+  const cookie: string[] = global.signin();
+
   const updated = await request(app)
     .put(`/api/users/${response.body.id}/password`)
+    .set('Cookie', cookie)
     .send({ password })
     .expect(200);
-  console.log(updated.body);
   expect(updated.body).not.toBeNull();
   expect(updated.body.id).toEqual(response.body.id);
 
@@ -29,16 +31,19 @@ it('returns a 200 on successful password update', async () => {
 it('returns a 400 with an empty password', async () => {
   const user: UserAttrs = await buildUserObject();
   const response = await performSignup(user);
-
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/${response.body.id}/password`)
+    .set('Cookie', cookie)
     .send({})
     .expect(400);
 });
 
 it('returns a 400 with an invalid user id', async () => {
+  const cookie: string[] = global.signin();
   await request(app)
     .put(`/api/users/123456789123456789012345/password`)
+    .set('Cookie', cookie)
     .send({})
     .expect(400);
 });
