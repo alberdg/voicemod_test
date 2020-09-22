@@ -35,7 +35,6 @@ const UserTable = (): JSX.Element => {
       const usersCount: number = response.data?.usersCount || 0;
       setUsersCount(usersCount);
       const pageCount: number = usersCount ? Math.ceil(usersCount / MAX_USER_RECORDS) : 0;
-      console.log('Total pages', pageCount);
       setPageCount(pageCount);
     } else {
       console.log(response.data, response.status);
