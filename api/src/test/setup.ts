@@ -6,6 +6,9 @@ import { Country } from '../models/country';
 import { CountryDoc } from '../models/country';
 let countries: CountryDoc[] = [];
 
+// Mock redis wrapper
+jest.mock('../redis/redis-wrapper');
+
 /**
  * Builds a test user object
  * @function
@@ -30,7 +33,7 @@ export const buildUserObject = async () => {
   };
 }
 
-const COUNTRIES = [
+export const COUNTRIES = [
   'Afganistán',
   'Albania',
   'Alemania',
@@ -258,6 +261,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (let collection of collections) {
@@ -288,6 +292,3 @@ global.signin = async () => {
 
   return cookie;
 };
-
-
-jest.setTimeout(30000);

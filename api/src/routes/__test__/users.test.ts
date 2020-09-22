@@ -18,13 +18,13 @@ it('Can fetch users', async () => {
   await performSignup(userD);
   const response = await request(app)
     .post('/api/users')
-    .send({ page: 1, limit: 2})
+    .send({ page: 0, limit: 2})
     .expect(200);
 
   expect(response).not.toBeNull();
   expect(response.body).not.toBeNull();
-  expect(response.body.length).toEqual(2);
-  expect(response.body[0].email).toEqual(userA.email);
-  expect(response.body[1].email).toEqual(userB.email);
+  expect(response.body.users?.length).toEqual(2);
+  expect(response.body.users[0]?.email).toEqual(userA.email);
+  expect(response.body.users[1]?.email).toEqual(userB.email);
 
 });
