@@ -16,10 +16,10 @@ export const PasswordContext = createContext({
 });
 
 /**
- * User context responsible for holding user data
+ * Password context responsible for holding password data
  * @function
  * @param children Children component
- * @returns element User context provider element
+ * @returns element Password context provider element
  */
 const PasswordContextProvider = ({ children }: { children: JSX.Element }) => {
   const [ password, setPassword ] = useState<string>('');
