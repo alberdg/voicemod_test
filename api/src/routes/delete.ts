@@ -13,11 +13,17 @@ router.delete(
   '/api/users/:id',
   async (req: Request, res: Response) => {
     const { id } = req.params;
-
+    const { limit = 10 } = req.body;
     await User.deleteOne({ _id: id });
 
-    const result: UserDoc[] = await User.find({});
-    res.status(200).send(result);
+    const usersCount: number = await User.find({}).countDocuments();
+    const users: UserDoc[] = await User.find({})
+      .limit(limit)
+      .populate('country');
+    res.status(200).send({
+      usersCount,
+      users
+    });
   }
 );
 

@@ -288,3 +288,6 @@ global.signin = async () => {
 
   return cookie;
 };
+
+
+jest.setTimeout(30000);
