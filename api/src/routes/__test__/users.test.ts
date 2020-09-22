@@ -7,12 +7,18 @@ import { buildUserObject } from '../../test/setup';
 it('Can fetch users', async () => {
   const userA: UserAttrs = await buildUserObject();
   const userB: UserAttrs = await buildUserObject();
+  const userC: UserAttrs = await buildUserObject();
+  const userD: UserAttrs = await buildUserObject();
   userB.email = 'random@test.com';
+  userC.email = 'randomC@test.com';
+  userD.email = 'randomD@test.com';
   await performSignup(userA);
   await performSignup(userB);
+  await performSignup(userC);
+  await performSignup(userD);
   const response = await request(app)
-    .get('/api/users')
-    .send()
+    .post('/api/users')
+    .send({ page: 1, limit: 2})
     .expect(200);
 
   expect(response).not.toBeNull();
