@@ -24,12 +24,16 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { page, limit = 10 } = req.body;
-    const skip = (page - 1) * limit;
+    const skip = page * limit;
+    const usersCount: number = await User.find({}).countDocuments();
     const users: UserDoc[] = await User.find({})
       .skip(skip)
       .limit(limit)
       .populate('country');
-    res.status(200).send(users);
+    res.status(200).send({
+      usersCount,
+      users,
+    });
   }
 );
 
