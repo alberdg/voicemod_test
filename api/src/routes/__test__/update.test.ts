@@ -68,17 +68,6 @@ it('returns a 400 with an invalid email', async () => {
     .expect(400);
 });
 
-it('returns a 400 with an invalid password', async () => {
-  const user: UserAttrs = await buildUserObject();
-  const response = await performSignup(user);
-  user.password = '';
-  user.newpassword = '';
-  await request(app)
-    .put(`/api/users/${response.body.id}`)
-    .send(user)
-    .expect(400);
-});
-
 
 it('returns a 400 with an invalid country', async () => {
   const user: any = await buildUserObject();

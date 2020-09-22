@@ -23,14 +23,6 @@ router.put(
     body('email')
       .isEmail()
       .withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be between 4 and 20 characters'),
-    body('newpassword')
-      .trim()
-      .isLength({ min: 4, max: 20 })
-      .withMessage('New password must be between 4 and 20 characters'),
     body('country')
       .trim()
       .isLength({ min: 12, max: 24 }) // Mongodb _id format
@@ -52,8 +44,6 @@ router.put(
       name,
       lastname,
       email,
-      password,
-      newpassword,
       country,
       telephone,
       postcode,
@@ -69,7 +59,6 @@ router.put(
       name,
       lastname,
       email,
-      password: newpassword,
       country,
       telephone,
       postcode,

@@ -1,30 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {  useEffect, useContext } from 'react';
 import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { renderInputField, renderSpinner, renderHelperMessage } from './';
 import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
-import { signup } from '../../actions/signup';
-import { SIGNED_IN_USER } from '../../constants';
 import { AppContext } from '../../context/app-context';
 import { UserContext } from '../../context/user-context';
 
 /**
- * Add user form component
+ * User form component
  * @function
  * @param history History object
- * @param shouldRedirect Flag indicating if component should redirect to home
+ * @param actionId Action button id
+ * @param performAction Action to be performed
+ * @param actionTitle Action button title
  * @returns singup Signup element
  */
-const AddUserForm = ({ history, shouldRedirect = true } : { history: any, shouldRedirect: boolean }): JSX.Element => {
+const UserForm = ({ actionId, performAction, actionTitle } :
+  { actionId: string, performAction: Function, actionTitle: string }): JSX.Element => {
   const { countries, setCountries} = useContext(AppContext);
   const {
     name, setName, lastname, setLastname, email, setEmail, password, setPassword,
     repeatPassword, setRepeatPassword, country, setCountry, telephone, setTelephone,
-    postcode, setPostcode
+    postcode, setPostcode, errorMessage, successMessage, loading, setLoading,
+    validForm, setValidForm
   } = useContext(UserContext);
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ errorMessage, setErrorMessage ] = useState<string>('');
-  const [ successMessage, setSuccessMessage ] = useState<string>('');
+
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
@@ -68,36 +68,6 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
     setCountry(country);
   }
 
-  /**
-   * Performs user signup
-   * @function
-   * @param event Form submitted event
-   */
-  const performSignup = async (event: MouseEvent) => {
-    event.preventDefault();
-    const validForm: boolean = isValidForm();
-    setErrorMessage('');
-    setSuccessMessage('');
-    setLoading(true);
-    if (validForm) {
-      const response = await signup(name, lastname, email, password, telephone, country, postcode)
-      if (response && response.status === 201) {
-        if (shouldRedirect) {
-          localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));
-          setLoading(false);
-          return history.push('/users');
-        } else {
-          setSuccessMessage('User successfully added');
-          resetForm();
-        }
-      } else if (response && response.status === 400) {
-        setErrorMessage('User already exists');
-      } else {
-        setErrorMessage('Error in user sign up');
-      }
-      setLoading(false);
-    }
-  }
 
   /**
    * Validates the form
@@ -165,8 +135,8 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns password Password element
    */
-  const renderPassword = () => {
-    const display: boolean = !validPassword && !password.isEmpty();
+  const renderPassword = (): JSX.Element => {
+    const display: boolean = !validPassword && !password?.isEmpty();
     return renderInputField('password-input',
     'form-control',
     'Password',
@@ -185,7 +155,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns repeatPassword Repeat password element
    */
-  const renderRepeatPassword = () => {
+  const renderRepeatPassword = (): JSX.Element => {
     const display: boolean = validPassword && password !== repeatPassword;
     return renderInputField('repeat-password-input',
     'form-control',
@@ -205,7 +175,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns telephone Telephone element
    */
-  const renderTelephone = () => {
+  const renderTelephone = (): JSX.Element => {
     return renderInputField('telephone-input',
     'form-control',
     'Telephone',
@@ -220,7 +190,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns postcode Postcode element
    */
-  const renderPostcode = () => {
+  const renderPostcode = (): JSX.Element => {
     return renderInputField('postcode-input',
     'form-control',
     'Postcode',
@@ -236,17 +206,17 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns signupButton Signup button element
    */
-  const renderSignupButton = (): JSX.Element => {
-    const disabled = !isValidForm();
+  const renderActionButton = (): JSX.Element => {
+    const disabled = !validForm;
     return (
       <div className="form-group mx-auto">
         <button
-          id="signup"
+          id={actionId}
           className="btn btn-primary"
           disabled={disabled}
-          onClick={(event: any) => performSignup(event)}
+          onClick={(event: any) => performAction(event, resetForm)}
         >
-          Sign up
+          {actionTitle}
         </button>
       </div>
     )
@@ -257,7 +227,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    * @function
    * @returns options Country options
    */
-  const renderCountryOptions = (): any => {
+  const renderCountryOptions = (): JSX.Element[] => {
     return countries.map((country: Country) =>
       <option className="country" key={country.id} id={country.id}>{country.name}</option>);
   }
@@ -321,6 +291,8 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
    */
   const renderForm = () : JSX.Element => {
     if (loading) return null as any;
+    // Store if the form is valid in user context
+    setValidForm(isValidForm());
     return (
       <form noValidate className="mt-3">
         {renderName()}
@@ -333,7 +305,7 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
         {renderPostcode()}
         {renderError()}
         {renderSuccess()}
-        {renderSignupButton()}
+        {renderActionButton()}
       </form>
     );
   }
@@ -348,4 +320,4 @@ const AddUserForm = ({ history, shouldRedirect = true } : { history: any, should
 
 
 }
-export default AddUserForm;
+export default UserForm;
