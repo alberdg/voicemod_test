@@ -40,7 +40,7 @@ router.put(
     await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
     const user: any = await User.findById({ _id: id });
-    console.log('user updated', user);
+
     // Generate JWT
     const userJwt = jwt.sign(
       {

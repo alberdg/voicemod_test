@@ -32,6 +32,7 @@ const setCorsHeaders = (req: Request, res: Response, next: NextFunction) => {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
   }
   next();
 }
@@ -44,17 +45,18 @@ app.use(setCorsHeaders);
 app.use(
   cookieSession({
     signed: false,
-    secure: process.env.NODE_ENV !== 'test'
+    secure: false,
+    path: '/'
   })
 );
 
 app.use(currentUser);
 app.use(countryRouter);
-app.use(signupRouter);
-app.use(signinRouter);
 app.use(updateRouter);
 app.use(deleteRouter);
 app.use(usersRouter);
+app.use(signupRouter);
+app.use(signinRouter);
 app.use(showRouter);
 app.use(updatePasswordRouter);
 
