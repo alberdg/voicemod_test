@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'
+import './user-table.css';
 import { renderSpinner } from './';
 import { User } from '../../interfaces/user';
 import { fetchUsers, deleteUser } from '../../actions/users';
+import { MAX_USER_RECORDS } from '../../constants';
+
 /**
  * Functional component representing a table with users
  * @function
@@ -13,19 +17,26 @@ import { fetchUsers, deleteUser } from '../../actions/users';
 const UserTable = (): JSX.Element => {
   const [ users, setUsers ] = useState<User>([] as any);
   const [ loading, setLoading ] = useState<boolean>(true);
-
+  const [ usersCount, setUsersCount ] = useState<number>(0);
+  const [ pageCount, setPageCount ] = useState<number>(10);
+  const [ currentPage, setCurrentPage ] = useState(0);
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   /**
    * Fetches users
    * @function
    */
-  const fetchData = async () => {
-    const response = await fetchUsers();
+  const fetchData = async (page: number) => {
+    const response = await fetchUsers(page, MAX_USER_RECORDS);
     if (response && response.status === 200) {
-      setUsers(response.data);
+      setUsers(response.data?.users || []);
+      const usersCount: number = response.data?.usersCount || 0;
+      setUsersCount(usersCount);
+      const pageCount: number = usersCount ? Math.ceil(usersCount / MAX_USER_RECORDS) : 0;
+      console.log('Total pages', pageCount);
+      setPageCount(pageCount);
     } else {
       console.log(response.data, response.status);
     }
@@ -51,6 +62,44 @@ const UserTable = (): JSX.Element => {
   }
 
   /**
+   * Renders pagination for users table
+   * @function
+   * @returns pagination Pagination element
+   */
+  const renderPagination = (): JSX.Element => {
+    if (!usersCount) {
+      return null as any;
+    }
+    return (
+      <div className="table-responsive mt-1">
+        <ReactPaginate
+            previousLabel={'previous'}
+            nextLabel={'next'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={pageCount}
+            pageClassName="pagination-page"
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName={'pagination'}
+            activeClassName={'pagination-active'}
+          />
+      </div>
+    )
+  }
+
+  /**
+   * Handles page change
+   * @function
+   * @param selected Selected page
+   * @returns pagination Pagination element
+   */
+  const handlePageChange = ({ selected } : { selected: number}) => {
+    setCurrentPage(selected);
+  }
+
+  /**
    * Renders a single user row
    * @function
    * @param user User item
@@ -73,7 +122,7 @@ const UserTable = (): JSX.Element => {
         <td>{name}</td>
         <td>{lastname}</td>
         <td>{email}</td>
-        <td>{country}</td>
+        <td>{country?.name || ''}</td>
         <td>{telephone}</td>
         <td>{postcode}</td>
       </tr>
@@ -124,8 +173,9 @@ const UserTable = (): JSX.Element => {
   }
   return (
     <>
-      {renderSpinner(loading)};
+      {renderSpinner(loading)}
       {renderUserTable()}
+      {renderPagination()}
     </>
   )
 }

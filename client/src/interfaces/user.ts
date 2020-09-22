@@ -1,3 +1,4 @@
+import { Country } from './country';
 /**
  * Interface representing a user
  * @interface
@@ -9,6 +10,6 @@ export interface User {
   email: string;
   password?: string;
   telephone: string;
-  country: string;
+  country: Country;
   postcode: string;
 };

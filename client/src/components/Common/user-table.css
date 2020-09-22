@@ -1,0 +1,12 @@
+.pagination {
+  padding: 8px;
+}
+
+.pagination-page, .previous, .next {
+  padding: 8px;
+}
+
+.pagination-active {
+  background-color: #007bff !important;
+  color: #fff;
+}

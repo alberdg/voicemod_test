@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Country } from '../models/country';
-import { redisGet, redisSet } from '../config';
+import { redisWrapper } from '../redis/redis-wrapper';
 const COUNTRIES = 'countries';
 const countryRouter = Router();
 
@@ -10,7 +10,7 @@ const countryRouter = Router();
  */
 const cacheCountries = async (): Promise<void> => {
   const countries = await Country.find({});
-  redisSet(COUNTRIES, countries);
+  redisWrapper.redisSet(COUNTRIES, countries);
 }
 
 
@@ -21,12 +21,12 @@ const cacheCountries = async (): Promise<void> => {
  * @param callback Express middleware callback
  */
 countryRouter.get('/api/countries', async (req: Request, res: Response) => {
-  const cached: any[] = await redisGet(COUNTRIES);
+  const cached: any[] = await redisWrapper.redisGet(COUNTRIES);
   if (Array.isArray(cached) && cached.length > 0) {
     return res.send(cached);
   }
   const countries = await Country.find({});
-  redisSet(COUNTRIES, countries);
+  redisWrapper.redisSet(COUNTRIES, countries);
   res.send(countries);
 });
 

@@ -2,6 +2,9 @@
   height: 50px;
 }
 
+.navbar-toggler {
+  background-color: #00C1FF;
+}
 #sign-out {
   position: absolute;
   right: 10%;
@@ -17,12 +20,13 @@
 
 .nav-item {
   padding: 16px;
+  background-color: #1573dd;
 }
 
 .active {
-  background-color: #fff;
+  background-color: #00C1FF;
 }
 
 .active > a {
-  color: #00C1FF !important;  
+  color: #fff !important;
 }
