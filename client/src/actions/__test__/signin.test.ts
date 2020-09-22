@@ -1,10 +1,9 @@
 import moxios from 'moxios';
-import { SERVER_URL } from '../../constants';
 import { signin } from '../signin';
 
 beforeEach(() => {
   moxios.install();
-  moxios.stubRequest(`${SERVER_URL}/api/users/signin`, {
+  moxios.stubRequest('/api/users/signin', {
     status: 200,
     response: {
       id: '123456789012123456765431',

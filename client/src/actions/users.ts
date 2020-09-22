@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SERVER_URL } from '../constants';
+
 
 /**
  * Service to fetch users
@@ -8,8 +8,9 @@ import { SERVER_URL } from '../constants';
  */
 export const fetchUsers = async (page: number, limit: number) : Promise<any> => {
   try {
-    const response = await axios.post(`${SERVER_URL}/api/users`,
-      { page, limit });
+    const response = await axios.post('/api/users',
+      { page, limit },
+      {withCredentials: true});
     return response;
   } catch (err) {
     return err.response;
@@ -24,7 +25,7 @@ export const fetchUsers = async (page: number, limit: number) : Promise<any> => 
  */
 export const deleteUser = async (userId: string) : Promise<any> => {
   try {
-    const response = await axios.delete(`${SERVER_URL}/api/users/${userId}`);
+    const response = await axios.delete(`/api/users/${userId}`);
     return response;
   } catch (err) {
     return err.response;
@@ -40,7 +41,7 @@ export const deleteUser = async (userId: string) : Promise<any> => {
  */
 export const fetchUserById = async (userId: string) : Promise<any> => {
   try {
-    const response = await axios.get(`${SERVER_URL}/api/users/${userId}`);
+    const response = await axios.get(`/api/users/${userId}`);
     return response;
   } catch (err) {
     return err.response;
@@ -62,7 +63,7 @@ export const fetchUserById = async (userId: string) : Promise<any> => {
 export const updateUser = async (userId: string, name: string, lastname: string,
   email: string, country: string, telephone: string, postcode: string): Promise<any> => {
     try {
-      const response = await axios.put(`${SERVER_URL}/api/users/${userId}`,
+      const response = await axios.put(`/api/users/${userId}`,
         { name, lastname, email, country, telephone, postcode });
       return response;
     } catch (err) {
@@ -77,7 +78,7 @@ export const updateUser = async (userId: string, name: string, lastname: string,
  */
 export const updatePassword = async (userId: string, password: string) : Promise<any> => {
   try {
-    const response = await axios.put(`${SERVER_URL}/api/users/${userId}/password`,
+    const response = await axios.put(`/api/users/${userId}/password`,
       { password });
     return response;
   } catch (err) {

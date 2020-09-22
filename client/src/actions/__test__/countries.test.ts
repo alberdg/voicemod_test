@@ -1,10 +1,9 @@
 import moxios from 'moxios';
-import { SERVER_URL } from '../../constants';
 import { fetchCountries } from '../countries';
 
 beforeEach(() => {
   moxios.install();
-  moxios.stubRequest(`${SERVER_URL}/api/countries`, {
+  moxios.stubRequest('/api/countries', {
     status: 200,
     response: [
     {

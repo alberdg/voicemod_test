@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './app';
 import { cacheCountries } from './routes/country';
-const HTTP_PORT = 3001;
+const HTTP_PORT = 3000;
 
 /**
  * Starts the API server

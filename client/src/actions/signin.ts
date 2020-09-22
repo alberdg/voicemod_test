@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { SERVER_URL } from '../constants';
 
 /**
  * Service to sign user in
@@ -10,7 +9,7 @@ import { SERVER_URL } from '../constants';
  */
 export const signin = async (email: string, password: string): Promise<any> => {
   try {
-    const response = await axios.post(`${SERVER_URL}/api/users/signin`,
+    const response = await axios.post('/api/users/signin',
       { email, password });
     return response;
   } catch (err) {
