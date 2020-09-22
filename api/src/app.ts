@@ -3,6 +3,7 @@ import { json } from 'body-parser';
 import helmet from 'helmet';
 import cookieSession from 'cookie-session';
 import { errorHandler } from './middlewares/error-handler';
+import { currentUser } from './middlewares/current-user';
 import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
@@ -12,6 +13,7 @@ import { usersRouter } from './routes/users';
 import { showRouter } from './routes/show';
 import { updatePasswordRouter } from './routes/update-password';
 import { NotFoundError } from './errors/not-found-error';
+
 
 const allowedOrigins = [ 'http://localhost:3000', 'http://localhost' ];
 
@@ -46,6 +48,7 @@ app.use(
   })
 );
 
+app.use(currentUser);
 app.use(countryRouter);
 app.use(signupRouter);
 app.use(signinRouter);

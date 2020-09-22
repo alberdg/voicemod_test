@@ -17,12 +17,13 @@ it('deletes the user with the given id', async () => {
   await performSignup(userC);
   await performSignup(userD);
 
-
+  const cookie: string[] = global.signin();
   const deleteResponse = await request(app)
     .delete(`/api/users/${responseB.body.id}`)
-    .send({ limit: 2 })
+    .set('Cookie', cookie)
+    .send({ limit: 3 })
     .expect(200);
   expect(deleteResponse.body).not.toBeNull();
-  expect(deleteResponse.body.users?.length).toEqual(2);
-  expect(deleteResponse.body.users[0]?.id).toEqual(response.body.id);
+  expect(deleteResponse.body.users?.length).toEqual(3);
+  expect(deleteResponse.body.users[1]?.id).toEqual(response.body.id);
 });

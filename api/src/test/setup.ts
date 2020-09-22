@@ -1,10 +1,13 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../app';
+import { BadRequestError } from '../errors/bad-request-error';
+import { UserAttrs } from '../models/user';
 import { Country } from '../models/country';
 import { CountryDoc } from '../models/country';
-let countries: CountryDoc[] = [];
+let countries: CountryDoc[] = [], testUserResponse: any;
 
 // Mock redis wrapper
 jest.mock('../redis/redis-wrapper');
@@ -14,7 +17,7 @@ jest.mock('../redis/redis-wrapper');
  * @function
  * @returns user User object
  */
-export const buildUserObject = async () => {
+export const buildUserObject = async (email: string = 'jonh.doe@test.com') => {
   if (!Array.isArray(countries) || countries.length === 0) {
     const response = await request(app)
       .get('/api/countries')
@@ -25,7 +28,7 @@ export const buildUserObject = async () => {
   return {
     name: 'Jonh',
     lastname: 'Doe',
-    email: 'jonh.doe@test.com',
+    email,
     password: 'jonhdoespas$',
     country: countries[0].id,
     telephone: '+34687014958',
@@ -233,7 +236,7 @@ export const COUNTRIES = [
 declare global {
   namespace NodeJS {
     interface Global {
-      signin(): Promise<string[]>;
+      signin(): string[];
     }
   }
 }
@@ -268,6 +271,13 @@ beforeEach(async () => {
     await collection.deleteMany({});
   }
   await createCountries();
+  const email = `test-${new Date().getTime()}@test.com`;
+  const user: UserAttrs = await buildUserObject(email);
+  testUserResponse = await request(app)
+    .post('/api/users/signup')
+    .send(user)
+    .expect(201);
+
 });
 
 afterAll(async () => {
@@ -276,19 +286,25 @@ afterAll(async () => {
 });
 
 
-global.signin = async () => {
-  const email = 'test@test.com';
-  const password = 'password';
+global.signin = () => {
+  if (!testUserResponse?.body?.id) {
+    throw new BadRequestError('Could not sign user in');
+  }
+  // Build a jwt payload
+    const payload = { id: testUserResponse.body.id, email: testUserResponse.body.email };
 
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send({
-      email,
-      password
-    })
-    .expect(201);
+    // Create jwt
+    const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-  const cookie = response.get('Set-Cookie');
+    // Build session Object
+    const session = { jwt: token };
 
-  return cookie;
+    // Turn that session into json
+    const sessionJSON = JSON.stringify(session);
+
+    // Take json and encode it as base64
+    const base64 = Buffer.from(sessionJSON).toString('base64');
+
+    // Return a string thats the cookie with the session data
+    return [`express:sess=${base64}`];
 };

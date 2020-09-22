@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { User, UserDoc } from '../models/user';
-
+import { requireAuth } from '../middlewares/require-auth';
 const router = express.Router();
 
 /**
@@ -13,6 +13,7 @@ const router = express.Router();
  */
 router.get(
   '/api/users/:id',
+  requireAuth,
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const user: UserDoc = await User.findById({ _id: id }) as any;

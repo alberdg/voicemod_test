@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { User, UserDoc } from '../models/user';
 import { validateRequest } from '../middlewares/validate-request';
+import { requireAuth } from '../middlewares/require-auth';
 const router = express.Router();
 
 
@@ -15,6 +16,7 @@ const router = express.Router();
  */
 router.post(
   '/api/users',
+  requireAuth,
   [
     body('page')
       .notEmpty()

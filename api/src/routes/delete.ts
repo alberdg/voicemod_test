@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import 'express-async-errors';
 import { User, UserDoc } from '../models/user';
+import { requireAuth } from '../middlewares/require-auth';
 const router = Router();
 
 /**
@@ -11,6 +12,7 @@ const router = Router();
  */
 router.delete(
   '/api/users/:id',
+  requireAuth,
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const { limit = 10 } = req.body;
