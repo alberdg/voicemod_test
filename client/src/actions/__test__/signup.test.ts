@@ -1,10 +1,9 @@
 import moxios from 'moxios';
-import { SERVER_URL } from '../../constants';
 import { signup } from '../signup';
 
 beforeEach(() => {
   moxios.install();
-  moxios.stubRequest(`${SERVER_URL}/api/users/signup`, {
+  moxios.stubRequest('/api/users/signup', {
     status: 201,
     response: {
       id: '123456789012123456765431',

@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import { promisify } from 'util';
-const REDIS_CONNECT_INFO = { port: 6379, host: 'redis' };
+const REDIS_CONNECT_INFO = { port: 6379, host: 'redis-srv' };
 
 
 class RedisWrapper {

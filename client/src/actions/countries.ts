@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { SERVER_URL } from '../constants';
 
 /**
  * Service to fetch countries
@@ -8,7 +7,7 @@ import { SERVER_URL } from '../constants';
  */
 export const fetchCountries = async (): Promise<any> => {
   try {
-    const response = await axios.get(`${SERVER_URL}/api/countries`);
+    const response = await axios.get('/api/countries');
     return response;
   } catch (err) {
     return err.response;

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: alberdg/voicemodapi
+          env:
+            - name: MONGO_URI
+              value: mongodb://voicemod:v01c3m0d@mongo-srv:27017/admin?authenticationDatabase=admin
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: NODE_ENV
+              value: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-srv
+spec:
+  selector:
+    app: api
+  ports:
+    - name: api
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

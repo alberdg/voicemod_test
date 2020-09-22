@@ -1,10 +1,10 @@
 import moxios from 'moxios';
-import { SERVER_URL } from '../../constants';
+
 import { fetchUsers, deleteUser } from '../users';
 
 beforeEach(() => {
   moxios.install();
-  moxios.stubRequest(`${SERVER_URL}/api/users`, {
+  moxios.stubRequest('/api/users', {
     status: 200,
     response: {
         usersCount: 2,
@@ -29,7 +29,7 @@ beforeEach(() => {
     }
   });
 
-  moxios.stubRequest(`${SERVER_URL}/api/user/:id`, {
+  moxios.stubRequest('/api/user/:id', {
     status: 200,
     response: [{
       id: '123456789012123456765432',

@@ -1,5 +1,4 @@
 import moxios from 'moxios';
-import { SERVER_URL } from '../../constants';
 import { deleteUser, updateUser } from '../users';
 import { createUser, buildUserObject } from '../../test/utils';
 import { User } from '../../interfaces/user';
@@ -15,7 +14,7 @@ beforeAll(async (done: Function) => {
 
 beforeEach(() => {
   moxios.install();
-  moxios.stubRequest(`${SERVER_URL}/api/users/:id`, {
+  moxios.stubRequest('/api/users/:id', {
     status: 200,
     response: user
   });
