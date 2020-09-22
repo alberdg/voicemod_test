@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { SERVER_URL } from '../constants';
-import { User } from '../interfaces/user';
 
 /**
  * Service to fetch users
  * @function
  * @returns response Users response
  */
-export const fetchUsers = async () : Promise<any> => {
+export const fetchUsers = async (page: number, limit: number) : Promise<any> => {
   try {
-    const response = await axios.get(`${SERVER_URL}/api/users`);
+    const response = await axios.post(`${SERVER_URL}/api/users`,
+      { page, limit });
     return response;
   } catch (err) {
     return err.response;

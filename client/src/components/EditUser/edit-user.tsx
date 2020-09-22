@@ -69,7 +69,7 @@ const EditUser = ({ history } : { history : any }) => {
     setEmail(email);
     setPassword('');
     setRepeatPassword('');
-    setCountry(country);
+    setCountry(country.id);
     setTelephone(telephone);
     setPostcode(postcode);
   }

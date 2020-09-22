@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 it('Can fetch users', async () => {
-  const response = await fetchUsers();
+  const response = await fetchUsers(1, 2);
   expect(response).not.toBeNull();
   expect(response.data).not.toBeNull();
   expect(response.data.length).toEqual(2)
@@ -54,7 +54,7 @@ it('Can fetch users', async () => {
 
 //FIXME
 it.skip('Removes a user', async () => {
-  const response = await fetchUsers();
+  const response = await fetchUsers(1, 1);
   const id: string = response.data[0].id;
   const result = await deleteUser(id);
   expect(result).not.toBeNull();

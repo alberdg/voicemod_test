@@ -12,7 +12,7 @@ import { User } from '../interfaces/user';
  */
 export const createUser = async (user: User) : Promise<User> => {
   const response = await signup(user.name, user.lastname, user.email,
-    user.password!, user.telephone, user.country, user.postcode);
+    user.password!, user.telephone, user.country.id, user.postcode);
   return (response && response.status === 201) ? response.data : null;
 }
 
@@ -53,7 +53,7 @@ export const buildUserObject = (email: string) : User => {
     lastname: 'test lastname',
     email,
     password: 'testpassword',
-    country: '123456789012345678901234',
+    country: { id: '123456789012345678901234', name: 'Test' },
     telephone: '687787654',
     postcode: '46787'
   };
@@ -78,7 +78,7 @@ export const removeTestUser = async (email: string) => {
  * @returns user User found
  */
 export const findUserByEmail = async (email: string): Promise<User> => {
-  const response = await fetchUsers();
+  const response = await fetchUsers(1, 999999);
   if (response && response.status === 200) {
     const user: User = response.data.find((item: User) => item.email === email);
     return user;

@@ -7,6 +7,8 @@ import './user-table.css';
 import { renderSpinner } from './';
 import { User } from '../../interfaces/user';
 import { fetchUsers, deleteUser } from '../../actions/users';
+import { MAX_USER_RECORDS } from '../../constants';
+
 /**
  * Functional component representing a table with users
  * @function
@@ -16,16 +18,17 @@ const UserTable = (): JSX.Element => {
   const [ users, setUsers ] = useState<User>([] as any);
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ pageCount, setPageCount ] = useState(10);
+  const [ currentPage, setCurrentPage ] = useState(1);
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   /**
    * Fetches users
    * @function
    */
-  const fetchData = async () => {
-    const response = await fetchUsers();
+  const fetchData = async (page: number) => {
+    const response = await fetchUsers(page, MAX_USER_RECORDS);
     if (response && response.status === 200) {
       setUsers(response.data);
     } else {
@@ -84,7 +87,7 @@ const UserTable = (): JSX.Element => {
    * @returns pagination Pagination element
    */
   const handlePageChange = ({ selected } : { selected: number}) => {
-    console.log(`handlePageChange`, selected);
+    setCurrentPage(selected);
   }
 
   /**
@@ -110,7 +113,7 @@ const UserTable = (): JSX.Element => {
         <td>{name}</td>
         <td>{lastname}</td>
         <td>{email}</td>
-        <td>{country}</td>
+        <td>{country?.name || ''}</td>
         <td>{telephone}</td>
         <td>{postcode}</td>
       </tr>
@@ -161,7 +164,7 @@ const UserTable = (): JSX.Element => {
   }
   return (
     <>
-      {renderSpinner(loading)};
+      {renderSpinner(loading)}
       {renderUserTable()}
       {renderPagination()}
     </>
