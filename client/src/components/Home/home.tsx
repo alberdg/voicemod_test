@@ -3,7 +3,9 @@ import './home.css';
 import Header from '../Common/header';
 import UserTable from '../Common/user-table';
 import { AppContext } from '../../context/app-context';
+import { UserContext } from '../../context/user-context';
 import { fetchCountries } from '../../actions/countries';
+import { checkAuthorization } from '../../utils/utils';
 
 /**
  * Functional component representing home page
@@ -13,7 +15,10 @@ import { fetchCountries } from '../../actions/countries';
  */
 const Home = ({ history } : { history : any }) => {
   const { countries, setCountries } = useContext(AppContext);
+  const { setUnauthorized } = useContext(UserContext);
+
   useEffect(() => {
+    checkAuthorization(history, setUnauthorized);
     if (!Array.isArray(countries) || countries.length === 0) {
       const fetchData = async () => {
         const response = await fetchCountries();

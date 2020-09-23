@@ -2,8 +2,8 @@ import moxios from 'moxios';
 import { signup } from '../signup';
 import { signout } from '../signout';
 import { removeTestUser } from '../../test/utils';
-import { SIGNED_IN_USER } from '../../constants';
 
+const email = `signuptest.${new Date().getTime()}@test.com`;
 beforeEach(() => {
   moxios.install();
   moxios.stubRequest('/api/users/signup', {
@@ -20,12 +20,12 @@ beforeEach(() => {
   });
 });
 
-afterEach(() => {
+afterEach(async () => {
   moxios.uninstall();
+  await removeTestUser(email);
 });
 
-it.only('Signs user up with with valid details', async () => {
-  const email = `signuptest.${new Date().getTime()}@test.com`;
+it('Signs user up with with valid details', async () => {
   await signup('Jonh',
     'Doe',
     email,
@@ -33,8 +33,6 @@ it.only('Signs user up with with valid details', async () => {
     '678574731',
     '123456788765431234567123',
     '46019');
-  expect(localStorage.getItem(SIGNED_IN_USER)).not.toBeNull();
-  await signout();
-  expect(localStorage.getItem(SIGNED_IN_USER)).toBeNull();
-  await removeTestUser(email);
+  const response = await signout();
+  expect(response.status).toEqual(200);
 });
