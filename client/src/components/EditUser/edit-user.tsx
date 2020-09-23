@@ -9,7 +9,7 @@ import { updateUser, updatePassword } from '../../actions/users';
 import { User } from '../../interfaces/user';
 import { renderHelperMessage } from '../Common/';
 import { fetchUserById } from '../../actions/users';
-
+import { checkAuthorization } from '../../utils/utils';
 /**
  * Functional component representing edit user page
  * @function
@@ -24,9 +24,11 @@ const EditUser = ({ history } : { history : any }) => {
     setTelephone, setPostcode, setValidForm } = useContext(UserContext);
   const { password, setPassword, setRepeatPassword,
     setPasswordErrorMessage, setPasswordSuccessMessage } = useContext(PasswordContext);
+  const { setUnauthorized } = useContext(UserContext);
   const [ fetchError, setFetchError ] = useState<string>('');
 
   useEffect(() => {
+    checkAuthorization(history, setUnauthorized);
     initializeContext();
     const fetchData = async () => {
       const response = await fetchUserById(id);

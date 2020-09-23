@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Header from '../Common/header';
 import UserForm from '../Common/user-form';
 import { UserContext } from '../../context/user-context';
 import { signup } from '../../actions/signup';
+import { checkAuthorization } from '../../utils/utils';
 
 /**
  * Functional component representing add user page
@@ -13,7 +14,12 @@ import { signup } from '../../actions/signup';
 const AddUser = ({ history } : { history : any }) => {
   const { validForm, setSuccessMessage, setErrorMessage,
     setLoading, name, lastname, email, password, country, telephone,
-    postcode } = useContext(UserContext);
+    postcode, setUnauthorized } = useContext(UserContext);
+
+    useEffect(() => {
+      checkAuthorization(history, setUnauthorized);
+    }, []);
+
   /**
    * Renders login title
    * @function

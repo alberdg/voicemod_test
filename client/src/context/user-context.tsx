@@ -15,6 +15,7 @@ export const UserContext = createContext({
   errorMessage: '',
   loading: false,
   validForm: false,
+  unauthorized: false,
   setName: (name: string) : void => {},
   setLastname: (lastname: string) : void => {},
   setEmail: (email: string) : void => {},
@@ -26,7 +27,8 @@ export const UserContext = createContext({
   setSuccessMessage: (successMessage: string) : void => {},
   setErrorMessage: (errorMessage: string) : void => {},
   setLoading: (loading: boolean) : void => {},
-  setValidForm: (validForm: boolean) : void => {}
+  setValidForm: (validForm: boolean) : void => {},
+  setUnauthorized: (unauthorized: boolean) : void => {}
 });
 
 /**
@@ -48,6 +50,7 @@ const UserContextProvider = ({ children }: { children: JSX.Element }) => {
   const [ errorMessage, setErrorMessage ] = useState<string>('');
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ validForm, setValidForm ] = useState<boolean>(false);
+  const [ unauthorized, setUnauthorized ] = useState<boolean>(false);
 
   return (
     <UserContext.Provider value={{
@@ -62,7 +65,8 @@ const UserContextProvider = ({ children }: { children: JSX.Element }) => {
       successMessage, setSuccessMessage,
       errorMessage, setErrorMessage,
       loading, setLoading,
-      validForm, setValidForm
+      validForm, setValidForm,
+      unauthorized, setUnauthorized,
     }}>
       {children}
     </UserContext.Provider>

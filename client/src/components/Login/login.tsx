@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
 import Logo from '../Common/logo';
@@ -6,6 +6,7 @@ import { isValidEmail, isValidPassword } from '../../utils/utils';
 import { signin } from '../../actions/signin';
 import { SIGNED_IN_USER } from '../../constants';
 import { renderSpinner, renderInputField, renderHelperMessage } from '../Common';
+import { UserContext } from '../../context/user-context';
 /**
  * Functional component representing login screen
  * @function
@@ -16,6 +17,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
   const [ password, setPassword ] = useState<string>('');
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
+  const { unauthorized, setUnauthorized } = useContext(UserContext);
   const validEmail = isValidEmail(email);
   const validPassword = isValidPassword(password);
 
@@ -27,7 +29,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
     // Prevent event default behaviour
     event.preventDefault();
     setErrorMessage('')
-
+    setUnauthorized(false);
     /**
      * Double check just in case user removes disabled property on
      * browsers inspector
@@ -162,6 +164,22 @@ const Login = ({ history } : { history : any }): JSX.Element => {
     )
   }
 
+
+  /**
+   * Renders an error for unauthorized users accessing to protected resources
+   * @function
+   * @returns element Unauthorized error element
+   */
+  const renderUnauthorizedError = () : JSX.Element => {
+    return (
+      renderHelperMessage(unauthorized,
+        'unauthorized-error',
+        'alert alert-danger',
+        'error',
+        'Please sign in to have access to the user manager')
+      );
+  }
+
   return (
     <div id="login-container">
       <div id="login-wrapper" className="col-md-6 col-sm-12 text-center">
@@ -177,6 +195,7 @@ const Login = ({ history } : { history : any }): JSX.Element => {
             'alert alert-danger',
             'error',
             errorMessage)}
+          {renderUnauthorizedError()}
           {renderLoginButton()}
           {renderSignupButton()}
         </form>
