@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './signup.css';
 import Logo from '../Common/logo';
 import AddUserForm from '../Common/user-form';
@@ -15,8 +16,29 @@ import { SIGNED_IN_USER } from '../../constants/';
 const Signup = ({ history }: { history: any }): JSX.Element => {
   const {
     setErrorMessage, setLoading, validForm, name, lastname,
-    email, password, telephone, country, postcode
+    email, password, telephone, country, postcode, setName, setLastname,
+    setEmail, setPassword, setRepeatPassword, setCountry, setTelephone,
+    setPostcode
   } = useContext(UserContext);
+
+  useEffect(() => {
+    initializeContext();
+  }, []);
+
+  /**
+   * Initialize user context
+   * @function
+   */
+  const initializeContext = () => {
+    setName('');
+    setLastname('');
+    setEmail('');
+    setPassword('');
+    setCountry('-1');
+    setRepeatPassword('');
+    setTelephone('');
+    setPostcode('');
+  }
 
   /**
    * Performs user sign up
@@ -93,6 +115,19 @@ const Signup = ({ history }: { history: any }): JSX.Element => {
       performAction={(event: MouseEvent, resetForm: Function) => performSignup(event, resetForm)}/>
   }
 
+  /**
+   * Renders sign in button
+   * @function
+   * @returns signinButton Sign in element
+   */
+  const renderSigninButton = (): JSX.Element => {
+    return (
+      <div className="form-group mx-auto">
+        <Link id="signin" to="/" className="text-white mt-5">Sign in</Link>
+      </div>
+    )
+  }
+
   return (
     <div id="signup-container">
       <div id="signup-wrapper" className="col-md-6 col-sm-12 text-center">
@@ -100,6 +135,7 @@ const Signup = ({ history }: { history: any }): JSX.Element => {
         {renderTitle()}
         {renderSubtitle()}
         {renderAddUserForm()}
+        {renderSigninButton()}
       </div>
     </div>
   );
