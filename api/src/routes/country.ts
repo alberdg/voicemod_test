@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Country } from '../models/country';
 import { redisWrapper } from '../redis/redis-wrapper';
-import { COUNTRIES } from '../test/setup';
+import { COUNTRIES } from '../constants';
 const COUNTRIES_KEY = 'countries';
 const countryRouter = Router();
 

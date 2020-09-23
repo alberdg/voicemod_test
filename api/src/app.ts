@@ -7,6 +7,7 @@ import { currentUser } from './middlewares/current-user';
 import { countryRouter } from './routes/country';
 import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
+import { signoutRouter } from './routes/signout';
 import { updateRouter } from './routes/update';
 import { deleteRouter } from './routes/delete';
 import { usersRouter } from './routes/users';
@@ -57,6 +58,7 @@ app.use(deleteRouter);
 app.use(usersRouter);
 app.use(signupRouter);
 app.use(signinRouter);
+app.use(signoutRouter);
 app.use(showRouter);
 app.use(updatePasswordRouter);
 
