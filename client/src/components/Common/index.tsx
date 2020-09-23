@@ -43,6 +43,7 @@ export const renderInputField = (id: string, classes: string, placeholder: strin
           type={type}
           value={value}
           onChange={event => onChange(event.target.value)}
+          autoComplete="off" // Browsers ignore it
         />
       </div>
       {
