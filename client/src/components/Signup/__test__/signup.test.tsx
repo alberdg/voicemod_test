@@ -7,7 +7,7 @@ beforeEach(async () => {
     headless: false
   });
   page = await browser.newPage();
-  await page.goto('localhost:3000/signup');
+  await page.goto('http://localhost/signup');
   await page.waitForSelector('#name-input');
 });
 
@@ -54,7 +54,7 @@ it('Has a create account button', async () => {
 });
 
 it('Has a back button', async () => {
-  const length = await page.$$eval('button#back', el => el.length);
+  const length = await page.$$eval('a#signin', el => el.length);
   expect(length).toEqual(1);
 });
 

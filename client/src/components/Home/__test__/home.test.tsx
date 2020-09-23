@@ -13,7 +13,7 @@ beforeEach(async () => {
    * FIXME: Bear in mind we will have to perform login first
    * once authorization is needed for navigation
    */
-  await page.goto('localhost:3000/users');
+  await page.goto('http://localhost/users');
   await page.waitForSelector('#users-table');
 });
 

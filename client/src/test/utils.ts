@@ -78,9 +78,10 @@ export const removeTestUser = async (email: string) => {
  * @returns user User found
  */
 export const findUserByEmail = async (email: string): Promise<User> => {
-  const response = await fetchUsers(1, 999999);
+  const response = await fetchUsers(0, 999999);
   if (response && response.status === 200) {
-    const user: User = response.data.find((item: User) => item.email === email);
+    const user: User = (Array.isArray(response.data)) ?
+      response.data.find((item: User) => item.email === email) : null;
     return user;
   }
   return null as any;

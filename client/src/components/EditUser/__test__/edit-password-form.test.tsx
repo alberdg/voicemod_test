@@ -7,13 +7,13 @@ let browser: Browser, page: Page, userEmail: string, user: User;
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
-    headless: true
+    headless: false
   });
   page = await browser.newPage();
   userEmail = `edituser.${new Date().getTime()}@test.com`;
   user = buildUserObject(userEmail);
   user = await createUser(user);
-  await page.goto(`http://localhost:3000/users/${user.id}`);
+  await page.goto(`http://localhost/users/${user.id}`);
   await page.waitForSelector('#name-input');
 });
 

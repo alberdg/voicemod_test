@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
 import './header.css';
 import { Link } from 'react-router-dom';
-
+import { signout } from '../../actions/signout';
+import { SIGNED_IN_USER } from '../../constants';
 /**
  * Header component
  * @function
  * @param history Router history
+ * @param active Active view
  * @returns header Header component
  */
 const Header = ({ history, active } : { history: any, active: string }) => {
   const [ collapsed, setCollapsed] = useState<boolean>(true);
+
+  /**
+   * Performs user signout
+   * @function
+   * @param event Click event
+   */
+  const performSignout = async (event: MouseEvent) : Promise<void> => {
+    event.preventDefault();
+    const response = await signout();
+    if (response && response.status === 200) {
+      localStorage.removeItem(SIGNED_IN_USER);
+      history.push('/');
+    }
+  }
 
   const renderMenu = () : JSX.Element => {
     if (collapsed) {
@@ -28,7 +44,7 @@ const Header = ({ history, active } : { history: any, active: string }) => {
             <Link id="add-new-user" className="text-white" to="/users/add">Add user</Link>
           </li>
           <li className="nav-item">
-            <Link id="sign-out-item" className="text-white" to="/">Sign out</Link>
+            <Link id="sign-out-item" className="text-white" to="" onClick={(event: any) => performSignout(event)}>Sign out</Link>
           </li>
         </ul>
       </div>
