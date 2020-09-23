@@ -9,7 +9,7 @@ beforeEach(async () => {
     headless: false
   });
   page = await browser.newPage();
-  await page.goto('http://localhost:3000/users/add');
+  await page.goto('http://localhost/users/add');
   await page.waitForSelector('#name-input');
 });
 

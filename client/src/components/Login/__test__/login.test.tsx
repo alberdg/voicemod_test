@@ -1,14 +1,18 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { removeTestUser, buildUserObject, createUser } from '../../../test/utils';
 const LOGIN_BUTTON = '#login'
 
-let browser: Browser, page: Page;
+let browser: Browser, page: Page, email: string;
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
     headless: false
   });
   page = await browser.newPage();
-  await page.goto('localhost:3000');
+  await page.goto('http://localhost');
+  email = `logintest.${new Date().getDate()}@test.com`;
+  let user = buildUserObject(email);
+  await createUser(user);
   await page.waitForSelector(LOGIN_BUTTON);
 });
 
@@ -111,17 +115,19 @@ it('Error message for invalid credentials', async () => {
 });
 
 it('User navigates to users page upon valid credentials provided', async () => {
+
   await page.focus('#email-input');
-  await page.keyboard.type('jonh.doe@test.com');
+  await page.keyboard.type(email);
   await page.focus('#password-input');
-  await page.keyboard.type('jonhdoespas$');
+  await page.keyboard.type('testpassword');
   await page.click('#login');
-  await page.waitFor(2000); // FIXME - Once header is implemented we will use waitForSelector('#header')
+  await page.waitForSelector('#header');
   const url = page.url();
   expect(url).toContain('/users');
 });
 
-afterEach(() => {
+afterEach(async () => {
   page.close();
   browser.close();
+  await removeTestUser(email);
 });
