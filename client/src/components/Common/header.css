@@ -1,0 +1,32 @@
+#header {
+  height: 50px;
+}
+
+.navbar-toggler {
+  background-color: #00C1FF;
+}
+#sign-out {
+  position: absolute;
+  right: 10%;
+  top: 10px;
+}
+
+#add-user-link {
+  position: absolute;
+  right: 20%;
+  top: 10px;
+}
+
+
+.nav-item {
+  padding: 16px;
+  background-color: #1573dd;
+}
+
+.active {
+  background-color: #00C1FF;
+}
+
+.active > a {
+  color: #fff !important;
+}

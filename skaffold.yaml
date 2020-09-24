@@ -1,0 +1,30 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # local:
+  #   push: false
+  googleCloudBuild:
+    projectId: voicemod-290410
+  artifacts:
+    - image: us.gcr.io/voicemod-290410/api
+      context: api
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: us.gcr.io/voicemod-290410/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.tsx'
+            dest: .
+          - src: '**/*.ts'
+            dest: .

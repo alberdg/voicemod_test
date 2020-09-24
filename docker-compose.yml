@@ -1,0 +1,24 @@
+version: '3.1'
+services:
+ redis:
+  image: redis
+  restart: always
+ mongo:
+   image: mongo
+   restart: always
+   environment:
+     MONGO_INITDB_ROOT_USERNAME: voicemod
+     MONGO_INITDB_ROOT_PASSWORD: v01c3m0d
+   ports:
+     - "27017:27017"
+   volumes:
+     - ./home/mongodb:/home/mongodb
+ api:
+   restart: always
+   image: alberdg/voicemodapi
+   ports:
+     - "3001:3001"
+   environment:
+     - NODE_ENV=production
+     - JWT_KEY=voicemodProd
+     - MONGO_URI='mongodb://voicemod:v01c3m0d@mongo:27017/admin?authenticationDatabase=admin'
