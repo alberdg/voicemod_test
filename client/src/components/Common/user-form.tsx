@@ -5,6 +5,7 @@ import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
 import { AppContext } from '../../context/app-context';
 import { UserContext } from '../../context/user-context';
+import { DEFAULT_COUNTRY } from '../../constants';
 
 /**
  * User form component
@@ -54,7 +55,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
     setRepeatPassword('');
     setTelephone('');
     setPostcode('');
-    setCountry('');
+    setCountry(DEFAULT_COUNTRY);
   }
 
   /**
@@ -64,7 +65,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
    */
   const handleCountryChange = (event: React.FormEvent<HTMLSelectElement>) => {
     const { selectedIndex } = event.currentTarget;
-    const country: string = selectedIndex ? countries[selectedIndex].id : '-1';
+    const country: Country = selectedIndex ? { id: countries[selectedIndex - 1].id, name: countries[selectedIndex - 1].name } : DEFAULT_COUNTRY;
     setCountry(country);
   }
 
@@ -77,7 +78,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
   const isValidForm = () => {
     return !name.isEmpty() && !lastname.isEmpty() && validEmail &&
       validPassword && repeatPassword === password && !telephone.isEmpty() &&
-      !postcode.isEmpty() && country !== '-1';
+      !postcode.isEmpty() && country?.id !== '-1';
   }
 
   /**
@@ -242,7 +243,7 @@ const UserForm = ({ actionId, performAction, actionTitle } :
       <div className="form-group">
         <select id="countries-select" className="form-control"
           onChange={event => handleCountryChange(event)}
-          value={country}>
+          value={country.name.toString()}>
           <option id="-1">Please select a country</option>
           {renderCountryOptions()}
         </select>

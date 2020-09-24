@@ -5,6 +5,7 @@ import { fetchCountries } from '../../actions/countries';
 import { Country } from '../../interfaces/country';
 import { AppContext } from '../../context/app-context';
 import { UserContext } from '../../context/user-context';
+import { DEFAULT_COUNTRY } from '../../constants';
 
 /**
  * Edit User form component
@@ -45,7 +46,8 @@ const EditUserForm = ({ actionId, performAction, actionTitle } :
    */
   const handleCountryChange = (event: React.FormEvent<HTMLSelectElement>) => {
     const { selectedIndex } = event.currentTarget;
-    const country: string = selectedIndex ? countries[selectedIndex].id : '-1';
+    // const country: string = selectedIndex ? countries[selectedIndex].id : '-1';
+    const country: Country = selectedIndex ? { id: countries[selectedIndex - 1].id, name: countries[selectedIndex - 1].name } : DEFAULT_COUNTRY;
     setCountry(country);
   }
 
@@ -57,7 +59,7 @@ const EditUserForm = ({ actionId, performAction, actionTitle } :
    */
   const isValidForm = () => {
     return !name.isEmpty() && !lastname.isEmpty() && validEmail &&
-      !telephone.isEmpty() && !postcode.isEmpty() && country !== '-1';
+      !telephone.isEmpty() && !postcode.isEmpty() && country?.id !== '-1';
   }
 
   /**
@@ -183,7 +185,7 @@ const EditUserForm = ({ actionId, performAction, actionTitle } :
       <div className="form-group">
         <select id="countries-select" className="form-control"
           onChange={event => handleCountryChange(event)}
-          value={country}>
+          value={country.name.toString()}>
           <option id="-1">Please select a country</option>
           {renderCountryOptions()}
         </select>

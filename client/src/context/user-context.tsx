@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
-
-
+import { Country } from '../interfaces/country';
+import { DEFAULT_COUNTRY } from '../constants';
 
 export const UserContext = createContext({
   name: '',
@@ -8,7 +8,7 @@ export const UserContext = createContext({
   email: '',
   password: '',
   repeatPassword: '',
-  country: '',
+  country: DEFAULT_COUNTRY,
   telephone: '',
   postcode: '',
   successMessage: '',
@@ -21,7 +21,7 @@ export const UserContext = createContext({
   setEmail: (email: string) : void => {},
   setPassword: (password: string) : void => {},
   setRepeatPassword: (repeatPassword: string) : void => {},
-  setCountry: (country: string) : void => {},
+  setCountry: (country: Country) : void => {},
   setTelephone: (telephone: string) : void => {},
   setPostcode: (postcode: string) : void => {},
   setSuccessMessage: (successMessage: string) : void => {},
@@ -43,7 +43,7 @@ const UserContextProvider = ({ children }: { children: JSX.Element }) => {
   const [ email, setEmail ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const [ repeatPassword, setRepeatPassword ] = useState<string>('');
-  const [ country, setCountry ] = useState<string>('-1');
+  const [ country, setCountry ] = useState<Country>(DEFAULT_COUNTRY);
   const [ telephone, setTelephone ] = useState<string>('');
   const [ postcode, setPostcode ] = useState<string>('');
   const [ successMessage, setSuccessMessage ] = useState<string>('');
