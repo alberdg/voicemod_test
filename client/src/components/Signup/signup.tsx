@@ -5,7 +5,7 @@ import Logo from '../Common/logo';
 import AddUserForm from '../Common/user-form';
 import { UserContext } from '../../context/user-context';
 import { signup } from '../../actions/signup';
-import { SIGNED_IN_USER } from '../../constants/';
+import { SIGNED_IN_USER, DEFAULT_COUNTRY } from '../../constants/';
 
 /**
  * Sign up component
@@ -34,7 +34,7 @@ const Signup = ({ history }: { history: any }): JSX.Element => {
     setLastname('');
     setEmail('');
     setPassword('');
-    setCountry('-1');
+    setCountry(DEFAULT_COUNTRY);
     setRepeatPassword('');
     setTelephone('');
     setPostcode('');
@@ -52,7 +52,7 @@ const Signup = ({ history }: { history: any }): JSX.Element => {
     setLoading(true);
     if (validForm) {
       const response = await signup(name, lastname, email, password, telephone,
-        country, postcode);
+        country?.id, postcode);
       if (response && response.status === 201) {
         resetForm();
         localStorage.setItem(SIGNED_IN_USER, JSON.stringify(response.data));

@@ -71,7 +71,7 @@ const EditUser = ({ history } : { history : any }) => {
     setEmail(email);
     setPassword('');
     setRepeatPassword('');
-    setCountry(country.id);
+    setCountry(country);
     setTelephone(telephone);
     setPostcode(postcode);
   }
@@ -105,7 +105,7 @@ const EditUser = ({ history } : { history : any }) => {
 
     if (validForm) {
       setLoading(true);
-      const response = await updateUser(id, name, lastname, email, country,
+      const response = await updateUser(id, name, lastname, email, country?.id,
         telephone, postcode);
       if (response && response.status === 200) {
         setSuccessMessage('User successfully edited');

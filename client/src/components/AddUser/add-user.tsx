@@ -46,7 +46,7 @@ const AddUser = ({ history } : { history : any }) => {
     setLoading(true);
     if (validForm) {
       const response = await signup(name, lastname, email, password, telephone,
-        country, postcode);
+        country?.id, postcode);
       if (response && response.status === 201) {
         setSuccessMessage('User successfully added');
         resetForm();
