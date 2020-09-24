@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: alberdg/voicemodclient
+          image: us.gcr.io/voicemod-290410/client
           env:
             - name: NODE_ENV
               value: production

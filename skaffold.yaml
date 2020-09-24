@@ -5,10 +5,12 @@ deploy:
     manifests:
       - ./infra/k8s/*
 build:
-  local:
-    push: false
+  # local:
+  #   push: false
+  googleCloudBuild:
+    projectId: voicemod-290410
   artifacts:
-    - image: alberdg/voicemodapi
+    - image: us.gcr.io/voicemod-290410/api
       context: api
       docker:
         dockerfile: Dockerfile
@@ -16,7 +18,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: alberdg/voicemodclient
+    - image: us.gcr.io/voicemod-290410/client
       context: client
       docker:
         dockerfile: Dockerfile
