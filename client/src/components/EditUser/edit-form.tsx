@@ -46,7 +46,6 @@ const EditUserForm = ({ actionId, performAction, actionTitle } :
    */
   const handleCountryChange = (event: React.FormEvent<HTMLSelectElement>) => {
     const { selectedIndex } = event.currentTarget;
-    // const country: string = selectedIndex ? countries[selectedIndex].id : '-1';
     const country: Country = selectedIndex ? { id: countries[selectedIndex - 1].id, name: countries[selectedIndex - 1].name } : DEFAULT_COUNTRY;
     setCountry(country);
   }
