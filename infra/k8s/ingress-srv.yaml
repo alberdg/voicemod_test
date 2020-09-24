@@ -5,9 +5,11 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    # kubernetes.io/ingress.global-static-ip-name: gke-albertogodar-static-ip
+    networking.gke.io/managed-certificates: albertogodar-certificate
 spec:
   rules:
-    - host: localhost
+    - host: albertogodar.com #voicemod.albertogodar.com
       http:
         paths:
           - path: /api/?(.*)

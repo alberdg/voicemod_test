@@ -1,11 +1,8 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  labels:
-    app: mongo
-  name: mongo
+  name: mongo-depl
 spec:
-  serviceName: mongo
   replicas: 1
   selector:
     matchLabels:
@@ -16,30 +13,8 @@ spec:
         app: mongo
     spec:
       containers:
-      - name: mongo
-        volumeMounts:
-          - mountPath: /data/db
-            name: mongo-claim
-        # volumeMounts:
-          # - mountPath: /Users/alberto/Desktop/data/db
-          #   name: mo-data-pv
-        image: mongo
-        ports:
-        - containerPort: 27017
-        env:
-          - name: MONGO_INITDB_ROOT_USERNAME
-            value: voicemod
-          - name: MONGO_INITDB_ROOT_PASSWORD
-            value: v01c3m0d
-      volumes:
-        - name: mongo-claim
-          persistentVolumeClaim:
-            claimName: mongo-claim
-      # volumes:
-      # - name: mo-data-pv
-      #   persistentVolumeClaim:
-      #     claimName: mo-data-pvc
-      # restartPolicy: Always
+        - name: mongo
+          image: mongo
 ---
 apiVersion: v1
 kind: Service
