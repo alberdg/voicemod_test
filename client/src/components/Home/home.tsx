@@ -50,7 +50,7 @@ const Home = ({ history } : { history : any }) => {
       <div className="row">
         <div className="col-sm-12 text-center" id="home">
           {renderTitle()}
-          <UserTable />
+          <UserTable history={history}/>
         </div>
       </div>
     </>

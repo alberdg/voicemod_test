@@ -18,6 +18,10 @@ router.delete(
     const { limit = 10 } = req.body;
     await User.deleteOne({ _id: id });
 
+    // If the user to remove is the current user sign the user out
+    if (id == req.currentUser?.id) {
+      req.session = null;
+    }
     const usersCount: number = await User.find({}).countDocuments();
     const users: UserDoc[] = await User.find({})
       .limit(limit)
