@@ -16,7 +16,8 @@ router.get(
   requireAuth,
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const user: UserDoc = await User.findById({ _id: id }) as any;
+    const user: UserDoc = await User.findById({ _id: id })
+      .populate('country') as UserDoc;
     res.status(200).send(user);
   }
 );
