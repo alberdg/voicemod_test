@@ -19,7 +19,7 @@ router.delete(
     await User.deleteOne({ _id: id });
 
     // If the user to remove is the current user sign the user out
-    if (id == req.currentUser?.id) {
+    if (id === req.currentUser?.id) {
       req.session = null;
     }
     const usersCount: number = await User.find({}).countDocuments();
