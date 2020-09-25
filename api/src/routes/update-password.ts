@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express';
 import { body, param } from 'express-validator';
-import jwt from 'jsonwebtoken';
 import 'express-async-errors';
 import { validateRequest } from '../middlewares/validate-request';
 import { requireAuth } from '../middlewares/require-auth';
@@ -40,20 +39,6 @@ router.put(
     await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
     const user: any = await User.findById({ _id: id });
-
-    // Generate JWT
-    const userJwt = jwt.sign(
-      {
-        id: user.id,
-        email: user.email
-      },
-      process.env.JWT_KEY!
-    );
-
-    // Store it on session object
-    req.session = {
-      jwt: userJwt
-    };
 
     res.status(200).send(user);
   }

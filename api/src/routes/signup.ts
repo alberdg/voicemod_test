@@ -1,4 +1,4 @@
-import { Request, Response, Router, NextFunction } from 'express';
+import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import 'express-async-errors';
@@ -71,19 +71,20 @@ router.post(
     });
     await user.save();
 
-    // Generate JWT
-    const userJwt = jwt.sign(
-      {
-        id: user.id,
-        email: user.email
-      },
-      process.env.JWT_KEY!
-    );
-
-    // Store it on session object
-    req.session = {
-      jwt: userJwt
-    };
+    if (!req.session?.jwt) {
+      // Generate JWT
+      const userJwt = jwt.sign(
+        {
+          id: user.id,
+          email: user.email
+        },
+        process.env.JWT_KEY!
+      );
+      // Store it on session object
+      req.session = {
+        jwt: userJwt
+      };
+    }
 
     res.status(201).send(user);
   }

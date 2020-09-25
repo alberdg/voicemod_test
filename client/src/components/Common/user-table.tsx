@@ -30,6 +30,7 @@ const UserTable = ({ history } : { history: any }): JSX.Element => {
   /**
    * Fetches users
    * @function
+   * @param page Page to fetch users from
    */
   const fetchData = async (page: number) => {
     const response = await fetchUsers(page, MAX_USER_RECORDS);
@@ -54,16 +55,14 @@ const UserTable = ({ history } : { history: any }): JSX.Element => {
     setLoading(true);
     const response = await deleteUser(userId);
     if (response && response.status === 200) {
-      console.log(response.data);
-      setUsers(response.data);
+      setUsers(response.data.users);
       const loggedIn: User = JSON.parse(localStorage.getItem(SIGNED_IN_USER) || '{}');
       if (userId === loggedIn?.id) {
         // Sign the user out
         history.push('/');
       }
     } else {
-
-      console.log(response.data, response.status);
+      setErrorMessage('Error while retrieving users');
     }
     setLoading(false);
   }

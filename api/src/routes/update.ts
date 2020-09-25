@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
-import jwt from 'jsonwebtoken';
 import 'express-async-errors';
 import { validateRequest } from '../middlewares/validate-request';
 import { requireAuth } from '../middlewares/require-auth';
@@ -66,20 +65,6 @@ router.put(
       postcode,
     };
     await User.updateOne({ _id: id }, { $set: user });
-
-    // Generate JWT
-    const userJwt = jwt.sign(
-      {
-        id,
-        email
-      },
-      process.env.JWT_KEY!
-    );
-
-    // Store it on session object
-    req.session = {
-      jwt: userJwt
-    };
 
     res.status(200).send(user);
   }
