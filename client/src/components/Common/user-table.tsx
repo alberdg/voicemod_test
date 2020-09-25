@@ -30,6 +30,7 @@ const UserTable = ({ history } : { history: any }): JSX.Element => {
   /**
    * Fetches users
    * @function
+   * @param page Page to fetch users from
    */
   const fetchData = async (page: number) => {
     const response = await fetchUsers(page, MAX_USER_RECORDS);
