@@ -7,14 +7,15 @@ import './user-table.css';
 import { renderSpinner , renderHelperMessage } from './';
 import { User } from '../../interfaces/user';
 import { fetchUsers, deleteUser } from '../../actions/users';
-import { MAX_USER_RECORDS } from '../../constants';
+import { MAX_USER_RECORDS, SIGNED_IN_USER } from '../../constants';
 
 /**
  * Functional component representing a table with users
  * @function
+ * @param history Browser history
  * @returns element User table element
  */
-const UserTable = (): JSX.Element => {
+const UserTable = ({ history } : { history: any }): JSX.Element => {
   const [ users, setUsers ] = useState<User>([] as any);
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ usersCount, setUsersCount ] = useState<number>(0);
@@ -55,8 +56,13 @@ const UserTable = (): JSX.Element => {
     if (response && response.status === 200) {
       console.log(response.data);
       setUsers(response.data);
+      const loggedIn: User = JSON.parse(localStorage.getItem(SIGNED_IN_USER) || '{}');
+      if (userId === loggedIn?.id) {
+        // Sign the user out
+        history.push('/');
+      }
     } else {
-      //FIXME implement proper notification
+
       console.log(response.data, response.status);
     }
     setLoading(false);
